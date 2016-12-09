@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block title %} 工单分配{% endblock %}
+{% block content %}
+{% load staticfiles %}  
+
+   <div class="container-fluid">
+        <ul class="filter">
+            <li>
+                <p><strong>客户级别：</strong></p>
+                <a href="{% url 'imp-apply-director-list' priority=0 progress=progress product_id=product_id %}?{{ query_param }}" {% ifequal priority 0 %}class="selected"{% endifequal %}>不限<span></span></a>
+                {% for val, text in customer_priority %}
+                    <a href="{% url 'imp-apply-director-list' priority=val progress=progress product_id=product_id %}?{{ query_param }}" {% ifequal priority val %}class="selected"{% endifequal %}>{{ text }}<span></span></a>
+                {% endfor %}
+            </li>
+            <li>
+                <p><strong>产品：</strong></p>
+                <a href="{% url 'imp-apply-director-list' progress=progress priority=priority product_id=0 %}?{{ query_param }}" {% ifequal product_id 0 %}class="selected"{% endifequal %}>不限<span></span></a>
+                {% for product in products %}
+                    <a href="{% url 'imp-apply-director-list' progress=progress priority=priority product_id=product.id %}?{{ query_param }}" {% ifequal product_id product.id %}class="selected"{% endifequal %}>{{ product.name }}<span></span></a>
+                {% endfor %}
+            </li>
+        </ul>
+        <form class="form-inline" action="{{ request.path }}" method="post" style="margin-bottom: 5px">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" class="form-control" name="project_name" value="{{ project_name }}" placeholder="项目名称">
+                <span class="input-group-btn">
+                    <button class="btn btn-info" type="submit">查询</button>
+                </span>
+            </div>
+        </form>
+    </div>
+    <!-- 信息列表 -->
+
+    <div class="container-fluid">
+        <ul class="nav nav-tabs">
+            <li role="presentation" {% ifequal progress 5 %}class="active"{% endifequal %}><a href="{% url 'imp-apply-director-list' progress=5 priority=priority product_id=product_id %}?{{ query_param }}">待交付</a></li>
+            <li role="presentation" {% ifequal progress 6 %}class="active"{% endifequal %}><a href="{% url 'imp-apply-director-list' progress=6 priority=priority product_id=product_id %}?{{ query_param }}">交付中</a></li>
+            <li role="presentation" {% ifequal progress 7 %}class="active"{% endifequal %}><a href="{% url 'imp-apply-director-list' progress=7 priority=priority product_id=product_id %}?{{ query_param }}">交付完成</a></li>
+
+        </ul>
+        <table class="table table-bordered table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th>单号</th>
+                    <th>所属项目</th>
+                    <th>客户id</th>
+                    <th>所属客户</th>
+                    <th>产品</th>
+                    <th>风控经理</th>
+                    <th>申请人</th>
+                    <th>状态</th>
+                    <th>申请时间</th>
+                    <th class="text-center">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for imp_apply in page.object_list %}
+
+                <tr>
+                    <th scope="row">{{ imp_apply.id }}</th>
+                    <td value= {{ imp_apply.project.name }}><a href="{{ imp_apply.project.get_absolute_url }}" class="btn btn-link btn-tb" role="button">{{ imp_apply.project.name }}</a></td>
+                    <td>{{ imp_apply.project.customer.id }}</td>
+                    <td  value={{ imp_apply.project.customer.name }} ><a href="{{ imp_apply.project.customer.get_absolute_url }}" class="btn btn-link btn-tb" role="button">{{ imp_apply.project.customer.name }}</a></td>
+                    <td>{{ imp_apply.product.name }}</td>
+                    <td>{{ imp_apply.analyser.user.first_name }}</td>
+                    <td>{{ imp_apply.applicant.user.first_name }}</td>
+                    <td>{{ imp_apply.get_progress_display }}</td>
+                    <td>{{ imp_apply.create_time | date:"Y-m-d H:i" }}</td>
+                    <td class="imp_apply_imp_engineer_user_first_name" style="display:none">{{ imp_apply.imp_engineer.user.first_name}}</td>
+                    
+                    <td  class="text-center">
+                        <button value="12" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">分单</button>
+                    </td>
+                    
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+<!-- Modal -->
+<div class="modal fade " id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">交付分单</h4>
+      </div>
+   
+      <div class="modal-body">
+      <form class="form-inline" role="form" action="{{ request.path }}" method="post">
+      {% csrf_token %}
+                           <div class="table-responsive">
+                                <table class="table table-condensed table-hover" width="120"  >
+                                    <tbody  border="0" >
+                                        <tr class="active"  >
+                                            <td width="120" style="background:transparent">客户名称</td>
+                                            <td width="120"  class="customer_name" ></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td width="120" style="background:transparent">所属项目</td>
+                                            <td width="160" class="project_name" ></td>
+                            
+                                        </tr>
+
+                                       <tr class="active">
+
+                                            <td width="120"style="background:transparent">状态</td>
+                                            <td width="120" class="imapply_status"></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td width="120"style="background:transparent">申请时间</td>
+                                            <td width="160" class="imapply_time"></td>
+                                        </tr>
+                                      <tr >
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                     
+                                        </tr>
+
+                                        <tr >
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+
+                                        <tr class="success">
+                                            <td width="120">原交付工程师</td>
+                                            <td width="120" class="imp_engineer"></td>
+                                             <td></td>
+                                             
+                                             <td></td>
+                                            <td width="120">接替交付工程师</td>
+                                            <td>
+                                                <select name="change_imp_to_engineer" class="form-control"> 
+                                                 {% for imp_engineer in  imp_engineer_list%}
+                                                    <option  value="{{ imp_engineer.id}}">{{ imp_engineer.user.first_name }}</option> 
+                                                 {% endfor%}
+                                                </select> 
+
+                                            </td>
+                                   
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                     <div class="form-group"> 
+                                        <label for="name">分单原因:</label> 
+                                        <textarea class="form-control" name="change_reason" rows="2" cols="40" required=""></textarea> 
+                                        <input style="display:none" type="text" class="imapply_id_display" name="change_imapply_id" >
+                                    </div> 
+                           </div>      
+
+                   
+
+
+        </div>
+      <div class="modal-footer">
+        
+        <button type="submit"  class="btn btn-default">提交</button>
+         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+    <div align="center">
+        {% bootstrap_pagination page url=request.path extra=query_param size="small" %}
+   
+    </div>
+<script src="{% static "/static/jquery/jquery-1.11.3.min.js" %}"></script>
+<script type="text/javascript">
+
+    $('button.btn-primary').click(function(){
+        var  imapply_id=$(this).parent().siblings().eq(0).html();
+        var  customer_name=$(this).parent().siblings().eq(3).attr("value");
+        var  project_name=$(this).parent().siblings().eq(1).attr("value");
+        var  imapply_time=$(this).parent().siblings().eq(8).html();
+        var  imp_engineer=$(this).parent().siblings().eq(9).html();
+        var  imapply_status=$(this).parent().siblings().eq(7).html();
+/*        alert(imapply_id);
+        alert($(this).parent().siblings().eq(4).html());*/
+        //alert(imp_engineer);
+        //alert(project_name);
+        $(".customer_name").text(customer_name);
+        $(".project_name").text(project_name);
+        $(".imapply_time").text(imapply_time);
+        $(".imp_engineer").text(imp_engineer);
+        $(".imapply_status").text(imapply_status);
+        $(".imapply_id_display").val(imapply_id);
+     
+
+    })
+    
+</script>
+{% endblock %}

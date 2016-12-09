@@ -1,0 +1,207 @@
+/* GLOBAL STYLES
+-------------------------------------------------- */
+
+body {
+  margin-top: 50px;
+}
+
+th {white-space: nowrap;}
+
+.btn-tb {margin: 0 1px 0 1px; padding: 2px 2px 2px 2px;}
+
+.form-group {margin-top: 5px; margin-bottom: 5px;}
+
+#wrapper {
+  margin-left:5px;
+  margin-right:5px;
+  padding-left:0;
+}
+
+#page-wrapper {
+  width: 100%;
+  padding: 5px 15px;
+}
+
+.filter{margin:10px 0 15px 0;padding-left:0;}
+.filter li{list-style:none; padding:10px 0 0 0;}
+.filter p, a{display:inline; padding:10px 0 5px 0;}
+.filter li a{cursor:pointer; display:inline-block; padding:0 10px;outline:0 none !important;}
+.filter li a:hover{font-weight:bold; text-decoration:none;}
+.filter li a.selected{
+    border:2px solid #e9630a;
+    position:relative;
+    padding:2px 9px;
+    text-decoration:none;
+    font-weight:bold;
+}
+.filter li a.selected span{
+    display:block;
+    width:15px;
+    height:15px;
+    background:url(../images/righbt.png) no-repeat 0 0;
+    right:-1px;bottom:-1px;
+    position:absolute;
+}
+
+/* loading
+-------------------------------------------------- */
+#loading{
+    position:fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    margin: 0 auto;
+    background: #fff url(../images/loading.gif) center center no-repeat;
+}
+
+/* CUSTOMIZE THE NAVBAR
+-------------------------------------------------- */
+.navbar-header {margin-top: 3px; margin-left: 3px;}
+.navbar-user {margin-right: 10px;}
+
+.form-pwd {
+  padding: 15px;
+  margin: 10px auto;
+  border-color: #DDDDDD;
+  border-radius: 9px;
+  border-width: 1px;
+  border-style: solid
+}
+
+.form-box {
+  padding: 20px;
+  margin: 10px auto;
+  border-color: #DDDDDD;
+  border-radius: 9px;
+  border-width: 1px;
+  border-style: solid
+}
+/* -------------------------------------------- */
+/*------------Go To Top Button -----------------*/
+/*----------------------------------------------*/
+#go-top {
+  position: fixed;
+  bottom: 0;
+  right: 25px;
+  display: none;
+}
+#go-top a {
+  text-decoration: none;
+  border: 0 none;
+  display: block;
+  width: 60px;
+  height: 40px;
+  background: url(../images/go-to-top.png) no-repeat 50% 50%;
+  background-color: #1f2024;
+
+  -webkit-transition: all 0.2s ease-in-out;
+   -moz-transition: all 0.2s ease-in-out;
+   -o-transition: all 0.2s ease-in-out;
+   -ms-transition: all 0.2s ease-in-out;
+   transition: all 0.2s ease-in-out;
+
+  border-radius: 3px 3px 0 0;
+
+  font: 0/0 a;
+  text-shadow: none;
+  color: transparent;
+}
+#go-top a:hover { background-color: #0F9095; }
+
+
+/* RESPONSIVE CSS
+-------------------------------------------------- */
+
+/* Customize Widths > 768px */
+@media (min-width:768px) {
+  body{
+    font-size: 12px;
+  }
+
+  .form-box {
+    max-width: 680px;
+  }
+
+  .input-box {
+    max-width: 150px;
+  }
+
+  .form-pwd {
+    max-width: 360px;
+  }
+
+  #notes-project{padding-right: 44px;}
+
+  /* Wrappers */
+
+  #wrapper {
+	padding-left: 150px;
+  }
+
+  #page-wrapper {
+	padding: 15px 15px;
+  }
+
+  /* Side Nav */
+
+  .side-nav {
+	margin-left: -150px;
+	left: 150px;
+	width: 150px;
+	position: fixed;
+	top: 50px;
+	height: 100%;
+	border-radius: 0;
+	border: none;
+	background-color: #222222;
+	overflow-y: auto;
+  }
+
+  /* Bootstrap Default Overrides - Customized Dropdowns for the Side Nav */
+
+  .side-nav>li.dropdown>ul.dropdown-menu {
+	position: relative;
+	min-width: 150px;
+	margin: 0;
+	padding: 0;
+	border: none;
+	border-radius: 0;
+	background-color: transparent;
+	box-shadow: none;
+	-webkit-box-shadow: none;
+  }
+
+  .side-nav>li.dropdown>ul.dropdown-menu>li>a {
+	color: #999999;
+	padding: 15px 15px 15px 25px;
+  }
+
+  .side-nav>li.dropdown>ul.dropdown-menu>li>a:hover,
+  .side-nav>li.dropdown>ul.dropdown-menu>li>a.active,
+  .side-nav>li.dropdown>ul.dropdown-menu>li>a:focus {
+	color: #fff;
+	background-color: #080808;
+  }
+
+  .side-nav>li>a {
+    width: 150px;
+    padding-left: 30px;
+  }
+
+  .navbar-inverse .navbar-nav>li>a:hover,
+  .navbar-inverse .navbar-nav>li>a:focus {
+	background-color: #080808;
+  }
+}
+
+@media (min-width: 1400px) {
+  body{
+    font-size: 14px;
+  }
+}

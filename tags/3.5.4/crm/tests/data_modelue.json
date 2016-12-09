@@ -1,0 +1,33 @@
+{
+    "account_type": "1",  // 账号类型 1:测试, 2:正式
+    "target": "首次对接/账号转正/套餐变更/其他",
+    "target_note": "补充说明",
+    "start_date": "2016-03-06",  // 建议对接开始日期
+    "mode": ["api", "web"],  // 对接形式
+    "multi_apply": "0",  // 是否计入多次申请0:否, 1:是
+    "required_key": "id,cell,name,商户",  // 必填KEY值
+
+    // 评估报告系列子产品
+    "pgbg_product": {
+        "test": {
+            "api_count": 50,  // 测试期查询限制 50条/天
+            "web_count": 1000  // 网页版共多少条
+        },
+        "product_selected": {"id": {"name": "", "code": ""}}  // 用户评估报告选择的模块,其中id为此模块在bankserver数据库中的id
+    },
+
+    // 海纳API系列产品
+    "HNApi_selected": {"id": {"name": "", "code": "", "val": "", "note": ""}},  // 此id为crm数据库中的id
+
+    // 个性化配置
+    "cus_config": {
+        "cus_pf": "如有个性化配置,请联系风控经理协助",  // 客制化评分
+        "cus_data": "预置数据项的名称,如无请附上新数据项逻辑.",  // 客制化数据
+        "rule_blk_sheet": "说明修改要求,包括不启用的规则,修改默认权重或条件的规则.",  // 借款反欺诈规则-黑名单
+        "rule_multi_apply": "说明修改要求，包括不启用的规则，修改默认权重或条件的规则"  // 借款反欺诈规则-多次申请
+    },
+
+    "radar_permission": "",  // 雷达平台权限
+
+    "note": ""  // 备注
+}

@@ -1,0 +1,111 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="CRM">
+    <meta name="keywords" content="100Credit CRM">
+    <meta name="author" content="100Credit">
+    <link rel="icon" href="{% static "/static/images/favicon.ico" %}">
+    <title>{% block title %}百融客户关系管理系统{% endblock %}</title>
+    <link href="{% static "/static/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static "/static/datetimepicker/bootstrap-datetimepicker.min.css" %}" rel="stylesheet">
+    <link href="{% static "/static/css/style.css" %}" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div id="wrapper">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="padding-right: 30px;padding-left: 15px;">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="{% url 'home' %}"><img src="{% static "/static/images/logo1.png" %}" class="img-responsive" alt="Brand" title="百融客户关系管理系统"></a>
+        </div>
+
+        <div id="navbar" class="collapse navbar-collapse navbar-right">
+            <ul class="nav navbar-nav side-nav">
+                {% if user.usercredit.role.role == "管理层" %}
+                    <li {% if 'customer/list' in request.path %}class="active"{% endif %}><a href="{% url 'customer-list' typeid=0 priority=0 zoneid=0 time=0 %}"><i class="glyphicon glyphicon-th-list"></i>&nbsp;客户列表</a></li>
+                    <li {% if 'project/list' in request.path %}class="active"{% endif %}><a href="{% url 'project-list' priority=0 progress=0 productid=0 zoneid=0 updatetime=0 %}"><i class="glyphicon glyphicon-tasks"></i>&nbsp;项目列表</a></li>
+                    <li {% if 'data-businessman' in request.path or 'data-customer' in request.path %}class="active"{% endif %}><a href="{% url 'data-businessman' %}"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;数据统计</a></li>
+                    <li {% if 'test-apply/list/' in request.path %}class="active"{% endif %}><a href="{% url 'test-apply-list' progress=1 priority=0 product_id=0 %}" ><i class="glyphicon glyphicon-th-list"></i>&nbsp;测试申请</a></li>
+                    <li {% if 'imp-apply/list/' in request.path %}class="active"{% endif %}><a href="{% url 'imp-apply-list' progress=1 priority=0 product_id=0 %}" ><i class="glyphicon glyphicon-th-list"></i>&nbsp;交付申请</a></li>
+                {% elif user.usercredit.role.role == "商务总监" %}
+                    <li {% if 'customer/list' in request.path %}class="active"{% endif %}><a href="{% url 'customer-list' typeid=0 priority=0 zoneid=0 time=0 %}"><i class="glyphicon glyphicon-th-list"></i>&nbsp;客户列表</a></li>
+                    <li {% if 'project/list' in request.path %}class="active"{% endif %}><a href="{% url 'project-list' priority=0 progress=0 productid=0 zoneid=0 updatetime=0 %}"><i class="glyphicon glyphicon-tasks"></i>&nbsp;项目列表</a></li>
+                    <li {% if 'data-businessman' in request.path or 'data-customer' in request.path %}class="active"{% endif %}><a href="{% url 'data-businessman' %}"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;数据统计</a></li>
+                    <li {% if 'test-apply/list/' in request.path %}class="active"{% endif %}><a href="{% url 'test-apply-list' progress=1 priority=0 product_id=0 %}" ><i class="glyphicon glyphicon-th-list"></i>&nbsp;测试申请</a></li>
+                    <li {% if 'imp-apply/list/' in request.path %}class="active"{% endif %}><a href="{% url 'imp-apply-list' progress=1 priority=0 product_id=0 %}" ><i class="glyphicon glyphicon-th-list"></i>&nbsp;交付申请</a></li>
+                {% elif user.usercredit.role.role == "商务" %}
+                    <li {% if 'customers/mine' in request.path %}class="active"{% endif %}><a href="{% url 'customers-mine' typeid=0 priority=0 time=0 %}"><i class="glyphicon glyphicon-th-large"></i>&nbsp;我的客户</a></li>
+                    <li {% if 'customers/all' in request.path %}class="active"{% endif %}><a href="{% url 'customers-all' typeid=0 priority=0 zoneid=0 time=0 %}"><i class="glyphicon glyphicon-th-list"></i>&nbsp;所有客户</a></li>
+                    <li {% if 'projects' in request.path %}class="active"{% endif %}><a href="{% url 'projects' priority=0 progress=0 productid=0 updatetime=0 %}"><i class="glyphicon glyphicon-tasks"></i>&nbsp;项目列表</a></li>
+                    <li {% if 'test-apply/list/' in request.path %}class="active"{% endif %}><a href="{% url 'test-apply-list' progress=1 priority=0 product_id=0 %}" ><i class="glyphicon glyphicon-th-list"></i>&nbsp;测试申请</a></li>
+                    <li {% if 'imp-apply/list/' in request.path %}class="active"{% endif %}><a href="{% url 'imp-apply-list' progress=1 priority=0 product_id=0 %}" ><i class="glyphicon glyphicon-th-list"></i>&nbsp;交付申请</a></li>
+                {% elif user.usercredit.role.role == "运营经理" %}
+                    <li {% if 'customer/list' in request.path %}class="active"{% endif %}><a href="{% url 'customer-list' typeid=0 priority=0 zoneid=0 time=0 %}"><i class="glyphicon glyphicon-th-list"></i>&nbsp;客户列表</a></li>
+                    <li {% if 'project/list/product' in request.path %}class="active"{% endif %}><a href="{% url 'project-list-product' priority=0 progress=0 productid=0 zoneid=0 updatetime=0 %}"><i class="glyphicon glyphicon-tasks"></i>&nbsp;项目列表</a></li>
+                    <li {% if 'imp-apply/list/' in request.path %}class="active"{% endif %}><a href="{% url 'imp-apply-list' progress=1 priority=0 product_id=0 %}" ><i class="glyphicon glyphicon-th-list"></i>&nbsp;交付申请</a></li>
+                {% elif user.usercredit.role.role == "风控经理" %}
+                    <li {% if 'customer/list' in request.path %}class="active"{% endif %}><a href="{% url 'customer-list' typeid=0 priority=0 zoneid=0 time=0 %}"><i class="glyphicon glyphicon-th-list"></i>&nbsp;客户列表</a></li>
+                    <li {% if 'project/list' in request.path %}class="active"{% endif %}><a href="{% url 'project-list' priority=0 progress=0 productid=0 zoneid=0 updatetime=0 %}"><i class="glyphicon glyphicon-tasks"></i>&nbsp;项目列表</a></li>
+                    <li {% if 'test-apply/list/' in request.path %}class="active"{% endif %}><a href="{% url 'test-apply-list' progress=1 priority=0 product_id=0 %}" ><i class="glyphicon glyphicon-th-list"></i>&nbsp;测试申请</a></li>
+                    <li {% if 'imp-apply/list/' in request.path %}class="active"{% endif %}><a href="{% url 'imp-apply-list' progress=1 priority=0 product_id=0 %}" ><i class="glyphicon glyphicon-th-list"></i>&nbsp;交付申请</a></li>
+                {% elif user.usercredit.role.role == "交付经理" %}
+                    <li class="active"><a href="{% url 'imp-apply-list' progress=1 priority=0 product_id=0 %}" ><i class="glyphicon glyphicon-th-list"></i>&nbsp;交付申请</a></li>
+                {% endif %}
+            </ul>
+            <ul class="nav navbar-nav navbar-user">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="glyphicon glyphicon-user"></i>&nbsp;{{ user.first_name }}<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="{% url 'profile' %}"><i class="glyphicon glyphicon-cog"></i>&nbsp;个人信息</a></li>
+                        <li class="divider"></li>
+                        <li><a href="{% url 'logout' %}"><i class="glyphicon glyphicon-off"></i>&nbsp;退出</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div id="page-wrapper">
+    {% block content %}
+    {% endblock %}
+    <div id="loading"></div>
+    </div>
+</div>
+{% block modal %}
+{% endblock %}
+<div class="container">
+    <div id="go-top" style="display: block;"><a title="回到顶部" href="#">Top</a></div>
+</div>
+<script src="{% static "/static/jquery/jquery-1.11.3.min.js" %}"></script>
+<script src="{% static "/static/bootstrap/js/bootstrap.min.js" %}"></script>
+<script src="{% static "/static/js/backtotop.js" %}"></script>
+<script type="text/javascript" src="{% static "/static/datetimepicker/bootstrap-datetimepicker.min.js" %}" charset="UTF-8"></script>
+<script type="text/javascript" src="{% static "/static/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js" %}" charset="UTF-8"></script>
+<script type="text/javascript">
+    $('.form_date').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0
+    });
+</script>
+<script src="{% static "/static/js/crm.js" %}"></script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}编辑客户{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="panel panel-info panel-table" style="max-width: 680px;margin: 10px auto;">
+        <div class="panel-heading">
+            <h3 class="panel-title">编辑客户信息</h3>
+        </div>
+        <div class="panel-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name" class="control-label">客户全称：</label>
+                <input id="name" type="text" class="form-control" value="{{ customer.name }}" placeholder="必填，客户签约主体，签合同时的客户名称" required>
+            </div>
+            <div class="form-group">
+                <label for="short-name" class="control-label">客户简称：</label>
+                <input id="short-name" type="text" class="form-control" value="{{ customer.short_name }}" placeholder="必填" required>
+            </div>
+            <div class="form-group">
+                <label for="type" class="control-label">客户类型：</label>
+                <select id="type" class="form-control">
+                {% for type in customer_type %}
+                    <option value="{{ type.id }}" {% ifequal type customer.type %}selected{% endifequal %}>{{ type }}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <label for="category1" class="control-label">客户一级类目：</label>
+                    <select id="category1" class="form-control">
+                        <option value="0">---请选择---</option>
+                        {% for c in category1_set %}
+                            <option value="{{ c.id }}" {% ifequal c.id customer.category1.id %}selected{% endifequal %}>{{ c.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="category2" class="control-label">客户一级类目：</label>
+                    <select id="category2" class="form-control">
+                        <option value="0">---请选择---</option>
+                        {% for c in category2_set %}
+                            <option value="{{ c.id }}" {% ifequal c.id customer.category2.id %}selected{% endifequal %}>{{ c.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="category3" class="control-label">客户一级类目：</label>
+                    <select id="category3" class="form-control">
+                        <option value="0">---请选择---</option>
+                        {% for c in category3_set %}
+                            <option value="{{ c.id }}" {% ifequal c.id customer.category3.id %}selected{% endifequal %}>{{ c.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="priority" class="control-label">客户级别：</label>
+                <select id="priority" class="form-control">
+                {% for val, text in customer_priority %}
+                    <option value="{{ val }}" {% ifequal val customer.priority %}selected{% endifequal %}>{{ text }}</option>
+                {% endfor %}
+                </select>
+            </div>
+            {% ifequal user.usercredit.zone.name "全国" %}
+                <div class="form-group">
+                    <label for="zone" class="control-label">所属区域：</label>
+                    <select id="zone" class="form-control">
+                    {% for z in zones %}
+                        <option value="{{ z.id }}" {% ifequal z customer.zone %}selected{% endifequal %}>{{ z }}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+            {% else %}
+                <input id="zone" value="0" hidden>
+            {% endifequal %}
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <label for="registered-capital" class="control-label">注册资本(万)：</label>
+                    <input id="registered-capital" value="{{ customer.registered_capital }}" type="number" min="0" class="form-control" placeholder="必填" required>
+                </div>
+                <div class="form-group col-sm-8">
+                    <label for="shareholder" class="control-label">股东：</label>
+                    <input id="shareholder" value="{{ customer.shareholder }}" type="text" class="form-control" placeholder="必填" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="product-desc" class="control-label">客户业务或产品描述：</label>
+                <textarea id="product-desc" class="form-control" rows="3" placeholder="必填" required>{{ customer.product_desc }}</textarea>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <label for="province" class="control-label">省份：</label>
+                    <select id="province" class="form-control">
+                    {% for province in provinces %}
+                        <option value="{{ province }}" {% ifequal province customer.province %}selected{% endifequal %}>{{ province }}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-sm-8">
+                    <label for="city" class="control-label">城市：</label>
+                    <input id="city" type="text" class="form-control" placeholder="必填" value="{{ customer.city }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="address" class="control-label">详细地址：</label>
+                <textarea id="address" class="form-control" rows="2">{{ customer.address }}</textarea>
+            </div>
+            <div class="form-group">
+                <label class="control-label">跟进商务：</label>
+                <div>
+                {% for businessman in zone_businessman %}
+                    <label class="checkbox-inline"><input name="businessman" value="{{ businessman.id }}" type="checkbox" {% if businessman in customer_businessman_set %}checked{% endif %} {% ifequal businessman.user user %}disabled{% endifequal %}>{{ businessman.user.first_name }}</label>
+                {% endfor %}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="notes" class="control-label">备注：</label>
+                <textarea id="notes" class="form-control" rows="3">{{ customer.notes }}</textarea>
+            </div>
+            <div align="center">
+                <button type="button" class="btn btn-success" onclick="customerEdit({{ customer.id }})">保存</button>
+                <button type="button" class="btn btn-danger" onclick="backpage()">返回</button>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+<script src="{% static "/static/jquery/jquery-1.11.3.min.js" %}"></script>
+<script>
+$(document).ready(function(){
+    $.getJSON('/crm/category/options/', function(ret){
+        if (ret['msg'] == 0){
+            var optionsData = ret['data'];
+            var category1 = optionsData.c1;
+            var category2 = optionsData.c2;
+            var category3 = optionsData.c3;
+            var domCategory1 = $('#category1');
+            var domCategory2 = $('#category2');
+            var domCategory3 = $('#category3');
+            domCategory1.change(function(){
+                var selectedVal = $(this).children('option:selected').val();
+                domCategory2.empty();
+                domCategory2.append('<option value="0">---请选择---</option>');
+                domCategory3.empty();
+                domCategory3.append('<option value="0">---请选择---</option>');
+                if (selectedVal !== "0"){
+                    var c2 = category2[selectedVal];
+                    if (c2 !== undefined){
+                        domCategory2.empty();
+                        domCategory2.append('<option value="0">---请选择---</option>');
+                        for (var i = 0; i < c2.length; i++){
+                            var c = c2[i];
+                            domCategory2.append('<option value="' + c.id + '">' + c.name + '</option>');
+                        }
+                    }
+                }
+            });
+            domCategory2.change(function(){
+                var selectedVal = $(this).children('option:selected').val();
+                domCategory3.empty();
+                domCategory3.append('<option value="0">---请选择---</option>');
+                if (selectedVal !== "0"){
+                    var c3 = category3[selectedVal];
+                    if (c3 !== undefined){
+                        for (var i = 0; i < c3.length; i++){
+                            var c = c3[i];
+                            domCategory3.append('<option value="'+ c.id+'">'+ c.name+'</option>');
+                        }
+                    }
+                }
+            });
+        } else {
+            alert(ret['msg']);
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block title %}所有客户{% endblock %}
+{% block content %}
+    <div class="container-fluid filtrate-box">
+        <ul class="filter">
+            <li>
+                <p><strong>客户类型：</strong></p>
+                <a href="{% url 'customers-all' typeid=0 priority=priority zoneid=zoneid time=time %}" {% ifequal typeid 0 %}class="selected"{% endifequal %}>不限<span></span></a>
+                {% for type in customer_type %}
+                    <a href="{% url 'customers-all' typeid=type.id priority=priority zoneid=zoneid time=time %}" {% ifequal typeid type.id %}class="selected"{% endifequal %}>{{ type.name }}<span></span></a>
+                {% endfor %}
+            </li>
+            <li>
+                <p><strong>客户级别：</strong></p>
+                <a href="{% url 'customers-all' typeid=typeid priority=0 zoneid=zoneid time=time %}" {% ifequal priority 0 %}class="selected"{% endifequal %}>不限<span></span></a>
+                {% for val, text in customer_priority %}
+                    <a href="{% url 'customers-all' typeid=typeid priority=val zoneid=zoneid time=time %}" {% ifequal priority val %}class="selected"{% endifequal %}>{{ text }}<span></span></a>
+                {% endfor %}
+            </li>
+            <li>
+                <p><strong>所属区域：</strong></p>
+                <a href="{% url 'customers-all' typeid=typeid priority=priority zoneid=0 time=time %}" {% ifequal zoneid 0 %}class="selected"{% endifequal %}>不限<span></span></a>
+                {% for zone in zones %}
+                    <a href="{% url 'customers-all' typeid=typeid priority=priority zoneid=zone.id time=time %}" {% ifequal zoneid zone.id %}class="selected"{% endifequal %}>{{ zone.name }}<span></span></a>
+                {% endfor %}
+            </li>
+            <li>
+                <p><strong>创建时间：</strong></p>
+                {% for val, text in time_choices %}
+                    <a href="{% url 'customers-all' typeid=typeid priority=priority zoneid=zoneid time=val %}" {% ifequal time val %}class="selected"{% endifequal %}>{{ text }}<span></span></a>
+                {% endfor %}
+            </li>
+        </ul>
+    </div>
+    <div class="container-fluid">
+        <form class="form-inline" action="" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="customer-name" class="control-label">客户名称：</label>
+                <input name="customer-name" type="text" class="form-control" value="{{ customer_name }}" placeholder="客户名称">
+            </div>
+            <div class="form-group">
+                <label for="date-start" class="control-label">创建时间：</label>
+                <div class="input-group date form_date" data-date-format="yyyy-mm-dd">
+                    <input name="date-start" class="form-control" size="12" type="text" value="{{ date_start }}" placeholder="起始时间" readonly>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="date-end" class="control-label">至</label>
+                <div class="input-group date form_date" data-date-format="yyyy-mm-dd">
+                    <input name="date-end" class="form-control" size="12" type="text" value="{{ date_end }}" placeholder="结束时间" readonly>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success form-group">查询</button>
+        </form>
+    </div>
+
+
+    <!-- 信息列表 -->
+    <div class="container-fluid">
+        <div align="left">
+            <br>
+            <a href="{% url 'export-customers' %}?{{ export_url_param }}" target="_blank" role="button" class="btn btn-success">&nbsp;&nbsp;导出&nbsp;&nbsp;</a>
+        </div>
+        <br>
+        <div>
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>客户名称</th>
+                        <th>简称</th>
+                        <th>类型</th>
+                        <th>客户级别</th>
+                        <th>区域</th>
+                        <th>注册资本(万)</th>
+                        <th>股东</th>
+                        <th>业务或产品描述</th>
+                        <th>省份</th>
+                        <th>城市</th>
+                        <th>详细地址</th>
+                        <th>跟进商务</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for customer in page.object_list %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ customer.name }}</td>
+                        <td>{{ customer.short_name }}</td>
+                        <td>{{ customer.type.name }}</td>
+                        <td>{{ customer.get_priority_display }}</td>
+                        <td>{{ customer.zone.name }}</td>
+                        <td>{{ customer.registered_capital }}</td>
+                        <td>{{ customer.shareholder }}</td>
+                        <td>{{ customer.product_desc }}</td>
+                        <td>{{ customer.province }}</td>
+                        <td>{{ customer.city }}</td>
+                        <td>{{ customer.address }}</td>
+                        <td>{{ customer.get_businessmans_name }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div align="center">
+        {% bootstrap_pagination page url=request.path extra=extra_param size="small" %}
+    </div>
+
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}密码修改成功{% endblock %}
+{% block content %}
+<script type="text/javascript">
+    var time = 3;
+    function update(){
+        document.getElementById("count").innerHTML = time;
+        time = time - 1;
+        if (time == 0){
+            location.href="{% url 'profile' %}";
+        }
+    }
+    setInterval("update()", 1000);
+</script>
+<div class="container" style="color: #180aff;">
+    <h2>密码修改成功!</h2>
+    <p id="count">3</p>
+</div>
+{% endblock %}

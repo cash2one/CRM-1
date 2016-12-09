@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+{% block title %}编辑项目{% endblock %}
+{% block content %}
+
+    <div class="container-fluid">
+        <form id="project-edit-form" class="form-horizontal">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <p><strong>基本信息</strong></p>
+                    <hr>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="project-name" class="control-label col-sm-4">项目名称：</label>
+                    <div class="col-sm-8">
+                        <input name="project-name" type="text" class="form-control" value="{{ project.name }}" placeholder="项目名称">
+                    </div>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="customer-name" class="control-label col-sm-4">所属客户：</label>
+                    <div class="col-sm-8">
+                        <select name="customer-name" class="form-control">
+                            {% for customer in user.usercredit.customer_set.all %}
+                                {% if customer.id == project.customer.id %}
+                                <option value="{{ customer.id }}" selected="selected">{{ customer.name }}</option>
+                                {% else %}
+                                <option value="{{ customer.id }}">{{ customer.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="product" class="control-label col-sm-4">产品：</label>
+                    <div class="col-sm-8">
+                        <div class="checkbox">
+                            {% for product in products %}
+                                {% if product in project.products.all %}
+                                    <label><input name="product" value="{{ product.id }}" type="checkbox" checked>{{ product.name }}</label>
+                                {% else %}
+                                    <label><input name="product" value="{{ product.id }}" type="checkbox">{{ product.name }}</label>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label class="control-label col-sm-4">跟进商务：</label>
+                    <div class="checkbox col-sm-8">
+                        {% for businessman in project.customer.businessman.all %}
+                            {% if businessman not in project.businessman.all %}
+                            <label><input name="businessman" value="{{ businessman.id }}" type="checkbox">{{ businessman.user.first_name }}</label>
+                            {% else %}
+                                {% if businessman.user == user %}
+                                <label><input name="businessman" value="{{ businessman.id }}" type="checkbox" checked disabled>{{ businessman.user.first_name }}</label>
+                                {% else %}
+                                <label><input name="businessman" value="{{ businessman.id }}" type="checkbox" checked>{{ businessman.user.first_name }}</label>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="form-group col-sm-12" id="notes-project">
+                    <label class="control-label col-sm-2">备注：</label>
+                    <div class="col-sm-10">
+                        <textarea name="notes" class="form-control" rows="4">{{ project.notes }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div align="center">
+            <button type="button" class="btn btn-success" onclick="ajax_project_edit({{ project.id }})">提交</button>
+            <a class="btn btn-danger" href="/crm/projects/0/0/0/0/" role="button">返回</a>
+        </div>
+
+        <div>
+            <p><strong>联系人信息</strong></p>
+            <hr>
+        </div>
+
+        <div align="left">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#contact-add-modal">添加联系人</button>
+        </div>
+        <br>
+
+        <table id="table-contact" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>编号</th>
+                    <th>姓名</th>
+                    <th>职位</th>
+                    <th>办公电话</th>
+                    <th>手机</th>
+                    <th>电子邮箱</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for contact in contacts %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ contact.name }}</td>
+                        <td>{{ contact.position }}</td>
+                        <td>{{ contact.tel }}</td>
+                        <td>{{ contact.mobile }}</td>
+                        <td>{{ contact.email }}</td>
+                        <td>
+                            <button type="button" class="btn btn-link btn-tb" value="{{contact.id}},{{ forloop.counter }}" onclick="show_contact_edit(this)">编辑</button>
+                            <button type="button" class="btn btn-link btn-tb" value="{{contact.id}},{{contact.name}}" onclick="show_contact_del(this)">删除</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div style="padding-right: 4px; padding-left: 4px;">
+            <p><strong>进度信息</strong></p>
+            <hr>
+        </div>
+
+        <div align="left">
+            <button type="button" class="btn btn-success" value="{{ project.id }},{{ project.get_cur_progress_val }}" onclick="show_progress_add(this)">更新进度</button>
+        </div>
+        <br>
+
+        <div>
+            <table id="table-progress" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>时间</th>
+                        <th>进度</th>
+                        <th>进展</th>
+                        <th>下一步计划</th>
+                        <th>更新人</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for progress in progresses %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ progress.updatetime | date:"Y-m-d" }}</td>
+                        <td>{{ progress.get_progress_display }}</td>
+                        <td>{{ progress.description }}</td>
+                        <td>{{ progress.plan }}</td>
+                        <td>{{ progress.operator }}</td>
+                        <td>
+                            {% if progress.operator == user.first_name %}
+                            <button type="button" class="btn btn-link btn-tb" value="{{ progress.id }},{{ forloop.counter }}" onclick="show_progress_edit(this)">编辑</button>
+                            <button type="button" class="btn btn-link btn-tb" value="{{ progress.id }}" onclick="show_progress_del(this)">删除</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div><!-- end contianer fluid -->
+{% endblock %}
+{% block modal %}
+    <!-- contact-add-modal -->
+    <div class="modal fade" id="contact-add-modal" tabindex="-1" role="dialog" aria-labelledby="contact-add-modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><strong>联系人信息</strong></h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="contact-name" class="control-label">姓名：</label>
+                            <input id="contact-name" name="contact-name" type="text" class="form-control" placeholder="必填">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-pos" class="control-label">职位：</label>
+                            <!-- <input id="contact-pos" name="contact-pos" type="text" class="form-control"> -->
+                            <select id="contact-pos" name="contact-pos" class="form-control" >
+                                <option value="业务" selected="selected">业务</option>
+                                <option value="技术">技术</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-tel" class="control-label">办公电话：</label>
+                            <input id="contact-tel" name="contact-tel" type="text" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-mobile" class="control-label">手机：</label>
+                            <input id="contact-mobile" name="contact-mobile" type="text" class="form-control" placeholder="必填">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-mail" class="control-label">电子邮箱：</label>
+                            <input id="contact-mail" name="contact-mail" type="text" class="form-control" placeholder="必填">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" onclick="ajaxContactAdd({{ project.id }})">添加</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div><!-- contact-add-modal -->
+    <!-- contact-edit-modal -->
+    <div class="modal fade" id="contact-edit-modal" tabindex="-1" role="dialog" aria-labelledby="contact-edit-modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><strong>联系人信息</strong></h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="contact-name" class="control-label">姓名：</label>
+                            <input id="contact-name" name="contact-name" value="" type="text" class="form-control" placeholder="必填">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-pos" class="control-label">职位：</label>
+                            <!-- <input id="contact-pos" name="contact-pos" value="" type="text" class="form-control"> -->
+                            <select id="contact-pos" name="contact-pos" class="form-control" >
+                                <option value="业务" selected="selected">业务</option>
+                                <option value="技术">技术</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-tel" class="control-label">办公电话：</label>
+                            <input id="contact-tel" name="contact-tel" value="" type="text" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-mobile" class="control-label">手机：</label>
+                            <input id="contact-mobile" name="contact-mobile" value="" type="text" class="form-control" placeholder="必填">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-mail" class="control-label">电子邮箱：</label>
+                            <input id="contact-mail" name="contact-mail" value="" type="text" class="form-control" placeholder="必填">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" value="" onclick="contact_edit(this)">保存</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div><!-- contact-edit-modal -->
+    <!-- progress-Modal -->
+    <div class="modal fade" id="progress-modal" tabindex="-1" role="dialog" aria-labelledby="progress-model" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><strong></strong></h4>
+                </div>
+                <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label class="control-label">最新进度：</label>
+                        <select name="progress" class="form-control">
+                            {% for val, text in progress_choices %}
+                            <option value="{{ val }}">{{ text }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dtp_input1" class="control-label">更新时间：</label>
+                        <div class="input-group date form_date" data-date-format="yyyy-mm-dd" data-link-field="dtp_input1">
+                            <input name="datetime" class="form-control" size="12" type="text" value="" placeholder="缺省当前时间" readonly>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">最新进展：</label>
+                        <textarea name="description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">下一步计划：</label>
+                        <textarea name="plan" class="form-control" rows="3"></textarea>
+                    </div>
+                </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" value="" onclick="progress_edit(this)">保存</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div><!-- end-progress-Modal -->
+    <!-- del-confirm-Modal -->
+    <div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog" aria-labelledby="confirm-modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><strong></strong></h4>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" value="" onclick="contact_del(this)">确认</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div><!-- end-del-confirm-Modal -->
+{% endblock %}

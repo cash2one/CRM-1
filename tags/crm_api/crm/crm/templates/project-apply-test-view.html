@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}测试申请{% endblock %}
+{% block content %}
+    <!-- 查看项目 -->
+    <div class="container-fluid">
+
+        <div class="panel panel-info panel-table">
+            <div class="panel-heading">
+                <h3 class="panel-title">测试申请</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered table-hover">
+                    <tbody>
+                        <tr>
+                            <th scope="row">项目名称</th>
+                            <td>{{ testapply.project.name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">所属客户</th>
+                            <td>{{ testapply.get_customer_name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">申请人</th>
+                            <td>{{ testapply.applyman.user.first_name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">申请时间</th>
+                            <td>{{ testapply.timestamp | date:"Y-m-d H:i" }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">dts账号</th>
+                            <td>{{ testapply.dts_account }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">分析师</th>
+                            <td>{{ testapply.analyser.user.first_name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">测试数据量</th>
+                            <td>{{ testapply.amount_data }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">本次测试目标</th>
+                            <td>{{ testapply.goal }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">客户提供的测试字段</th>
+                            <td>{{ testapply.test_fields }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">测试结果要求</th>
+                            <td>{{ testapply.get_test_result }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">是否提供逾期状态</th>
+                            <td>{{ testapply.get_overdue_state }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">联系人</th>
+                            <td>{{ testapply.get_contact.name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">职位</th>
+                            <td>{{ testapply.get_contact.position }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">固话</th>
+                            <td>{{ testapply.get_contact.tel }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">手机</th>
+                            <td>{{ testapply.get_contact.mobile }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">邮箱</th>
+                            <td>{{ testapply.get_contact.email }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">备注</th>
+                            <td>{{ testapply.notes }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div align="center">
+            <hr>
+            <button type="button" class="btn btn-warning" onclick="backtopage()">返回</button>
+        </div>
+
+    </div><!-- end contianer fluid -->
+{% endblock %}

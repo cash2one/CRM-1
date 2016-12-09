@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}交付申请{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    
+        <div class="panel panel-info panel-table" style="max-width: 680px;margin: 10px auto;">
+            <div class="panel-heading">
+                <h3 class="panel-title">申请交付</h3>
+            </div>
+            <div class="panel-body">
+                <p><strong>项目名称:</strong>{{ project.name }}</p>
+                <p><strong>客户名称:</strong>{{ project.customer.name }}</p>
+                <p><strong>交付产品:</strong>{{ product.name }}</p>
+                <p><strong>申请人:</strong>{{ user.first_name }}</p>
+                <form action="" method="post">{% csrf_token %}
+                      <div class="form-group">
+                        <label for="imp_engineer" class="control-label">交付工程师：</label>
+                        <select id="imp_engineer" name="imp-engineer" class="form-control">
+                            {% for usercredit in options_imp_engineer %}
+                                {% if usercredit.id == selected_imp_engineer %}
+                                <option value="{{ usercredit.id }}" selected>{{ usercredit.user.first_name }}</option>
+                                {% else %}
+                                <option value="{{ usercredit.id }}">{{ usercredit.user.first_name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% for field in form %}
+                        <div class="form-group">
+                            <label for="{{ field.html_name }}" class="control-label">{{ field.label }}{{ field.help_text }}</label>
+                            <div style="color: red">{{ field.errors }}</div>
+                            {{ field }}
+                        </div>
+                    {% endfor %}
+                    {% if show_data_module %}
+                        <div style="color: red">{{ error_msg_data_module }}</div>
+                        <div class="form-group">
+                            <label class="control-label">采购的数据模块(必填)：</label>
+                            {% for category, data_modules in data_modules_dict.items %}
+                            <div class="checkbox">
+                                <p>{{ category }}：</p>
+                                {% for data_module in data_modules %}
+                                    <label><input name="data_module" value="{{ data_module.id }}" type="checkbox">{{ data_module.name }}</label>
+                                {% endfor %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="contact-name" class="control-label">联系人：</label>
+                        <input name="contact-name" type="text" value="{{ contact_name }}" class="form-control" placeholder="姓名">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-pos" class="control-label">职位：</label>
+                        <input name="contact-pos" type="text" value="{{ contact_pos }}" class="form-control" placeholder="职位">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-tel" class="control-label">办公电话：</label>
+                        <input name="contact-tel" type="text" value="{{ contact_tel }}" class="form-control" placeholder="固话">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-mobile" class="control-label">手机：</label>
+                        <input name="contact-mobile" type="text" value="{{ contact_mobile }}" class="form-control" placeholder="手机">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-mail" class="control-label">电子邮箱：</label>
+                        <input name="contact-mail" type="text" value="{{ contact_mail }}" class="form-control" placeholder="电子邮箱">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes" class="control-label">备注：</label>
+                        <textarea id="notes" name="notes" class="form-control" rows="3">{{ notes }}</textarea>
+                    </div>
+                    <div style="color: red">{{ error_msg }}</div>
+                    <div align="center">
+                        <button type="submit" class="btn btn-success">提交</button>
+                        <button type="button" class="btn btn-danger" onclick="backpage()">返回</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+</div>
+{% endblock %}

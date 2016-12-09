@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}个人资料{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+
+        <ul class="nav nav-tabs">
+            <li role="presentation" class="active"><a href="{% url 'profile' %}">我的资料</a></li>
+            <li role="presentation"><a href="{% url 'changepwd' %}">修改密码</a></li>
+        </ul>
+
+        <table class="table table-bordered table-hover">
+            <tbody>
+                <tr>
+                    <th scope="row">姓名</th>
+                    <td>{{ user.first_name }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">职位</th>
+                    <td>{{ user.usercredit.role.role }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">区域</th>
+                    <td>{{ user.usercredit.zone.name }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">账号</th>
+                    <td>{{ user.username }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">邮箱</th>
+                    <td>{{ user.email }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+{% endblock %}

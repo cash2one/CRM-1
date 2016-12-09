@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}{{ customer.name }}{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="panel panel-info panel-table">
+            <div class="panel-heading">
+                <h3 class="panel-title">基本信息</h3>
+            </div>
+            <div class="panel-body">
+                <table id="table_view" class="table table-bordered table-hover">
+                    <tbody>
+                        <tr class="default">
+                            <th scope="row">客户名称:</th>
+                            <td>{{ customer.name }}</td>
+                        </tr>
+                        <tr class="default">
+                            <th scope="row">客户简称:</th>
+                            <td>{{ customer.short_name }}</td>
+                        </tr>
+                        <tr class="default">
+                            <th scope="row">类型:</th>
+                            <td>{{ customer.type.name }}</td>
+                        </tr>
+                        <tr class="default">
+                            <th scope="row">客户一级类目:</th>
+                            <td>{{ customer.category1.name }}</td>
+                        </tr>
+                        <tr class="default">
+                            <th scope="row">客户二级类目:</th>
+                            <td>{{ customer.category1.name }}</td>
+                        </tr>
+                        <tr class="default">
+                            <th scope="row">客户三级类目:</th>
+                            <td>{{ customer.category1.name }}</td>
+                        </tr>
+                        <tr class="default">
+                            <th scope="row">客户级别:</th>
+                            <td>{{ customer.priority }}</td>
+                        </tr>
+                        <tr class="default">
+                            <th scope="row">注册资本(万):</th>
+                            <td>{{ customer.registered_capital }}</td>
+                        </tr>
+                        <tr class="default">
+                            <th scope="row">股东:</th>
+                            <td>{{ customer.shareholder }}</td>
+                        </tr>
+                        <tr class="default">
+                            <th scope="row">业务或产品描述:</th>
+                            <td>{{ customer.product_desc }}</td>
+                        </tr>
+                        <tr class="default">
+                            <th scope="row">省份:</th>
+                            <td>{{ customer.province }}</td>
+                        </tr>
+                        <tr class="default">
+                            <th scope="row">城市:</th>
+                            <td>{{ customer.city }}</td>
+                        </tr>
+                        <tr class="default">
+                            <th scope="row">详细地址:</th>
+                            <td>{{ customer.address }}</td>
+                        </tr>
+                        <tr class="default">
+                            <th scope="row">跟进商务:</th>
+                            <td>{{ customer.get_businessmans_name }}</td>
+                        </tr>
+                        <tr class="default">
+                            <th scope="row">备注:</th>
+                            <td>{{ customer.notes }}</td>
+                        </tr>
+                        <tr class="default">
+                            <th scope="row">创建时间:</th>
+                            <td>{{ customer.timestamp | date:"Y-m-d H:i" }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div align="center">
+            <hr>
+            <button type="button" class="btn btn-warning" onclick="backtopage()">返回</button>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+{% block title %}{{ project.name }}{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="panel panel-info panel-table">
+                <div class="panel-heading">
+                    <h3 class="panel-title">基本信息</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover">
+                        <tbody>
+                            <tr>
+                                <th scope="row">项目名称</th>
+                                <td>{{ project.name }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">所属客户</th>
+                                <td>{{ project.customer.name }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">当前状态</th>
+                                <td>{{ project.get_state }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">产品</th>
+                                <td>{{ project.get_products_name }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">客户级别</th>
+                                <td>{{ project.priority_display }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">跟进商务</th>
+                                <td>{{ project.get_businessmans_name }}</td>
+                            </tr>
+                            {% with progress=project.get_cur_progress %}
+                            <tr>
+                                <th scope="row">当前进度</th>
+                                <td>{{ progress.progress }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">最新进展</th>
+                                <td>{{ progress.desc }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">下一步计划</th>
+                                <td>{{ progress.plan }}</td>
+                            </tr>
+                            {% endwith %}
+                            <tr>
+                                <th scope="row">备注</th>
+                                <td>{{ project.notes }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">创建时间</th>
+                                <td>{{ project.timestamp | date:"Y-m-d H:i" }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {% if contacts %}
+            <div class="panel panel-info panel-table">
+                <div class="panel-heading">
+                    <h3 class="panel-title">联系人信息</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover" id="table-contact">
+                        <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>姓名</th>
+                                <th>职位</th>
+                                <th>固话</th>
+                                <th>手机</th>
+                                <th>邮箱</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for contact in contacts %}
+                                <tr>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>{{ contact.name }}</td>
+                                    <td>{{ contact.position }}</td>
+                                    <td>{{ contact.tel }}</td>
+                                    <td>{{ contact.mobile }}</td>
+                                    <td>{{ contact.email }}</td>
+                                    <td><button type="button" class="btn btn-link btn-tb" value="{{contact.id}},{{ forloop.counter }}" onclick="show_contact_edit(this)">编辑</button></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if progresses %}
+            <div class="panel panel-info panel-table">
+                <div class="panel-heading">
+                    <h3 class="panel-title">进度信息</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>时间</th>
+                                <th>进度</th>
+                                <th>进展</th>
+                                <th>下一步计划</th>
+                                <th>更新人</th>
+                                {% if user.usercredit.privilege > 1 %}<th>标注</th>{% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for progress in progresses %}
+                                <tr>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>{{ progress.updatetime | date:"Y-m-d" }}</td>
+                                    <td>{{ progress.get_progress_display }}</td>
+                                    <td>{{ progress.description }}</td>
+                                    <td>{{ progress.plan }}</td>
+                                    <td>{{ progress.operator }}</td>
+                                    {% if user.usercredit.privilege > 1 %}<td>{{ progress.mark.content }}</td>{% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div align="center">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#contact-add-modal">添加联系人</button>
+            <button type="button" class="btn btn-warning" onclick="backtopage()">返回</button>
+        </div>
+    </div><!-- end contianer fluid -->
+{% endblock %}
+<!-- contact-add-modal -->
+{% block modal %}
+    <div class="modal fade" id="contact-add-modal" tabindex="-1" role="dialog" aria-labelledby="contact-add-modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><strong>联系人信息</strong></h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="contact-name" class="control-label">姓名：</label>
+                            <input id="contact-name" name="contact-name" type="text" class="form-control" placeholder="必填">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-pos" class="control-label">职位：</label>
+                            <!-- <input id="contact-pos" name="contact-pos" type="text" class="form-control"> -->
+                            <select id="contact-pos" name="contact-pos" class="form-control" >
+                                <option value="业务" selected="selected">业务</option>
+                                <option value="技术">技术</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-tel" class="control-label">办公电话：</label>
+                            <input id="contact-tel" name="contact-tel" type="text" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-mobile" class="control-label">手机：</label>
+                            <input id="contact-mobile" name="contact-mobile" type="text" class="form-control" placeholder="必填">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-mail" class="control-label">电子邮箱：</label>
+                            <input id="contact-mail" name="contact-mail" type="text" class="form-control" placeholder="必填">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" onclick="ajaxContactAdd({{ project.id }})">添加</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div><!-- contact-add-modal -->
+    <!-- contact-edit-modal -->
+    <div class="modal fade" id="contact-edit-modal" tabindex="-1" role="dialog" aria-labelledby="contact-edit-modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><strong>联系人信息</strong></h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="contact-name" class="control-label">姓名：</label>
+                            <input id="contact-name" name="contact-name" value="" type="text" class="form-control" placeholder="必填">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-pos" class="control-label">职位：</label>
+                            <!-- <input id="contact-pos" name="contact-pos" value="" type="text" class="form-control"> -->
+                            <select id="contact-pos" name="contact-pos" class="form-control" >
+                                <option value="业务" selected="selected">业务</option>
+                                <option value="技术">技术</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-tel" class="control-label">办公电话：</label>
+                            <input id="contact-tel" name="contact-tel" value="" type="text" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-mobile" class="control-label">手机：</label>
+                            <input id="contact-mobile" name="contact-mobile" value="" type="text" class="form-control" placeholder="必填">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-mail" class="control-label">电子邮箱：</label>
+                            <input id="contact-mail" name="contact-mail" value="" type="text" class="form-control" placeholder="必填">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" value="" onclick="contact_edit(this)">保存</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div><!-- contact-edit-modal -->
+{% endblock %}

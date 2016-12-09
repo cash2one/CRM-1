@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}交付申请{% endblock %}
+{% block content %}
+<div class="container-fluid">
+
+        <div class="panel panel-info panel-table">
+            <div class="panel-heading">
+                <h3 class="panel-title">交付申请</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered table-hover">
+                    <tbody>
+                        <tr>
+                            <th scope="row">项目名称</th>
+                            <td>{{ impapply.project.name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">客户名称</th>
+                            <td>{{ impapply.project.customer.name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">申请人</th>
+                            <td>{{ impapply.applyman.user.first_name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">交付产品</th>
+                            <td>{{ impapply.product.name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">交付工程师</th>
+                            <td>{{ impapply.imp_engineer.user.first_name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">申请时间</th>
+                            <td>{{ impapply.timestamp | date:"Y-m-d H:i" }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">是否已签署保密协</th>
+                            <td>{{ impapply.get_nda }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">是否已签署正式合同</th>
+                            <td>{{ impapply.get_contract }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">是否部署百融代码</th>
+                            <td>{{ impapply.get_br_code }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">账号类型</th>
+                            <td>{{ impapply.get_account_type_display }}</td>
+                        </tr>
+                        {% for key, val in impapply.extra_fields.items %}
+                        <tr>
+                            <th scope="row">{{ val.label }}</th>
+                            {% if val.type == "choice" %}
+                                <td>{{ val.selected }}</td>
+                            {% else %}
+                                <td>{{ val.value }}</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                        {% if impapply.get_data_modules %}
+                        <tr>
+                            <th scope="row">采购的数据模块</th>
+                            <td>{{ impapply.get_data_modules }}</td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <th scope="row">联系人</th>
+                            <td>{{ impapply.get_contact.name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">职位</th>
+                            <td>{{ impapply.get_contact.position }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">固话</th>
+                            <td>{{ impapply.get_contact.tel }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">手机</th>
+                            <td>{{ impapply.get_contact.mobile }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">邮箱</th>
+                            <td>{{ impapply.get_contact.email }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">备注</th>
+                            <td>{{ impapply.notes }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div align="center">
+            <hr>
+            <button type="button" class="btn btn-warning" onclick="backtopage()">返回</button>
+        </div>
+</div>
+{% endblock %}

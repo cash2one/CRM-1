@@ -1,0 +1,795 @@
+{% load staticfiles %}
+{% load myfilter %}
+<form id="impForm" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="page-header" style="margin-top: 0">
+        <h4><span class="label label-default">客户信息：</span></h4>
+    </div>
+    <div class="row">
+        <p class="col-sm-4"><strong>项目名称：</strong>{{ project.name }}</p>
+        <p class="col-sm-4"><strong>客户全称：</strong>{{ project.customer.name }}</p>
+        <p class="col-sm-4"><strong>客户简称：</strong>{{ project.customer.short_name }}</p>
+    </div>
+    <div class="row">
+        <p class="col-sm-4"><strong>客户一级类目：</strong>{{ project.customer.category1 }}</p>
+        <p class="col-sm-4"><strong>客户二级类目：</strong>{{ project.customer.category2 }}</p>
+        <p class="col-sm-4"><strong>客户三级类目：</strong>{{ project.customer.category3 }}</p>
+    </div>
+    <div class="row">
+        <p class="col-sm-4"><strong>发起日期：</strong>{% now "Y-m-d" %}</p>
+        <p class="col-sm-4"><strong>所属商务：</strong>{{ user.first_name }}</p>
+    </div>
+    <div class="row">
+        <div class="form-group col-sm-4">
+            <label for="imp-date-start" class="control-label">建议对接开始日期：</label>
+            <div class="input-group date" id="advice-imp-date-start" data-date-format="yyyy-mm-dd">
+                <input id="imp-date-start" name="imp-date-start" class="form-control" size="12" type="text" value="{{ date_start }}" readonly>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-sm-4">
+            <label for="contact" class="control-label">联系人</label>
+            <div class="input-group">
+                <select id="contact" name="contact" class="form-control">
+                    <option value="0">--请选择--</option>
+                    {% for contact in contacts %}
+                        <option value="{{ contact.id }}" {% ifequal contact contact_selected %}selected{% endifequal %}>{{ contact.name }}</option>
+                    {% endfor %}
+                </select>
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-info" onclick="show_contact_add_modal()">新建</button>
+                </span>
+            </div>
+        </div>
+        <div class="form-group col-sm-4">
+            <label for="analyser" class="control-label">风控经理：</label>
+            <select id="analyser" name="analyser" class="form-control">
+            <option value="0">--请选择--</option>
+            {% for usercredit in analysers %}
+                <option value="{{ usercredit.id }}" {% ifequal usercredit analyser_selected %}selected{% endifequal %}>{{ usercredit.user.first_name }}</option>
+            {% endfor %}
+            </select>
+        </div>
+        <div class="form-group col-sm-4">
+            <label for="operations" class="control-label">运营经理：</label>
+            <select id="operations" name="operations" class="form-control">
+            <option value="0">--请选择--</option>
+            {% for usercredit in operations %}
+                <option value="{{ usercredit.id }}" {% ifequal usercredit operations_selected %}selected{% endifequal %}>{{ usercredit.user.first_name }}</option>
+            {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="page-header" style="margin-bottom: 0;">
+        <h4><span class="label label-default">此次交付申请简况：</span></h4>
+    </div>
+    <div class="row">
+        <div class="form-group col-sm-4">
+            <label for="imp-target" class="control-label">交付目的：</label>
+            <select id="imp-target" name="imp-target" class="form-control">
+                <option value="0" {% ifequal target "0" %}selected{% endifequal %}>--请选择--</option>
+                <option value="首次对接" {% ifequal target "首次对接" %}selected{% endifequal %}>首次对接</option>
+                <option value="账号转正" {% ifequal target "账号转正" %}selected{% endifequal %}>账号转正</option>
+                <option value="套餐变更" {% ifequal target "套餐变更" %}selected{% endifequal %}>套餐变更</option>
+                <option value="其他" {% ifequal target "其他" %}selected{% endifequal %}>其他</option>
+            </select>
+        </div>
+        <div class="form-group col-sm-8">
+            <label for="imp-target-note" class="control-label">补充说明</label>
+            <textarea id="imp-target-note" name="imp-target-note" class="form-control" rows="1">{{ target_note }}</textarea>
+        </div>
+    </div>
+
+    <div class="page-header" style="margin-bottom: 0;">
+        <h4><span class="label label-default">账号类型：</span></h4>
+    </div>
+    <div class="form-group">
+        <label class="radio-inline"><input type="radio" name="account-type" value="1" {% ifequal account_type "1" %}checked{% endifequal %}>测试</label>
+        <label class="radio-inline"><input type="radio" name="account-type" value="2" {% ifequal account_type "2" %}checked{% endifequal %}>正式</label>
+    </div>
+
+    <div class="page-header" style="margin-bottom: 0;">
+        <h4><span class="label label-default">对接要求：</span></h4>
+    </div>
+    <div class="row">
+        <div class="form-group col-sm-4">
+            <label class="control-label">对接形式：</label>
+            <label class="checkbox-inline"><input type="checkbox" name="imp-mode" value="api" {% if "api" in mode %}checked{% endif %}>API</label>
+            <label class="checkbox-inline"><input type="checkbox" name="imp-mode" value="web" {% if "web" in mode %}checked{% endif %}>网页</label>
+        </div>
+        <div class="form-group col-sm-4">
+            <label class="control-label">转正后是否计入多次申请：</label>
+            <label class="radio-inline"><input type="radio" id="multi-apply1" name="multi-apply" value="0" {% ifequal multi_apply "0" %}checked{% endifequal %}>否</label>
+            <label class="radio-inline"><input type="radio" id="multi-apply2" name="multi-apply" value="1" {% ifequal multi_apply "1" %}checked{% endifequal %}>是</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-sm-8">
+            <label for="required-key" class="control-label">必填key值：</label>
+            <textarea id="required-key" name="required-key" class="form-control" rows="1" required>{{ required_key }}</textarea>
+        </div>
+    </div>
+    <div class="page-header">
+        <h4><span class="label label-default">对接产品：</span></h4>
+        <p class="text-danger">请注意：部分产品在网页的对接下不可选； 手机实名认证不提供测试期使用</p>
+    </div>
+    <div class="row">
+        <h5 class="col-sm-4"><strong>一、评估报告系列子产品</strong></h5>
+    </div>
+
+    <div id="test-panel">
+        <fieldset {% ifequal account_type "2" %}disabled hidden{% endifequal %}>
+        <div class="row">
+            <p class="col-sm-4"><strong>测试期查询限制：</strong></p>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-4">
+                <label for="api-count" class="control-label">API(条/天)</label>
+                <input type="number" min="0" step="1" id="api-count" name="api-count" class="form-control" value="{{ pgbg_product.test.api_count }}" required>
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="web-count" class="control-label">网页(总条数)</label>
+                <input type="number" min="0" step="1" id="web-count" name="web-count" class="form-control" value="{{ pgbg_product.test.web_count }}" required>
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="email-pic" class="control-label">上传Frank邮件确认截图</label>
+                <input type="file" id="email-pic" name="email-pic">
+            </div>
+        </div>
+        </fieldset>
+        {% if imp_apply.pic %}
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <a href="{{ imp_apply.pic.url }}" target="_blank"><img id="email-pic-thumb" src="{{ imp_apply.pic.avatar.url }}" alt="Responsive image" class="img-responsive img-thumbnail"></a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div id="formal-panel">
+        <fieldset {% ifequal account_type "1" %}disabled hidden{% endifequal %}>
+        <div class="row">
+            <p class="col-sm-4"><strong>免费条款：</strong></p>
+        </div>
+        {% with formal=pgbg_product.formal %}
+        <div class="row">
+            <div class="form-group col-sm-4">
+                <label for="free-date-start" class="control-label">免费期开始日期：</label>
+                <div class="input-group date form_date" data-date-format="yyyy-mm-dd">
+                    <input name="free-date-start" class="form-control" size="12" type="text" value="{{ formal.free_date_start }}" placeholder="必填" readonly required>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div>
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="free-period" class="control-label">免费期限</label>
+                <select class="form-control" id="free-period" name="free-period">
+                    <option value="" {% ifequal formal.free_period "" %}selected{% endifequal %}>--请选择--</option>
+                    <option value="0" {% ifequal formal.free_period "0" %}selected{% endifequal %}>0个月</option>
+                    <option value="1" {% ifequal formal.free_period "1" %}selected{% endifequal %}>1个月</option>
+                    <option value="2" {% ifequal formal.free_period "2" %}selected{% endifequal %}>2个月</option>
+                    <option value="3" {% ifequal formal.free_period "3" %}selected{% endifequal %}>3个月</option>
+                    <option value="4" {% ifequal formal.free_period "4" %}selected{% endifequal %}>4个月</option>
+                    <option value="5" {% ifequal formal.free_period "5" %}selected{% endifequal %}>5个月</option>
+                    <option value="6" {% ifequal formal.free_period "6" %}selected{% endifequal %}>6个月</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-4">
+                <label for="free-limit" class="control-label">免费查询限额：</label>
+                <input id="free-limit" name="free-limit" type="number" min="0" class="form-control" value="{{ formal.free_limit }}" placeholder="必填" required>
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="free-time-note" class="control-label">免费期其它说明：</label>
+                <textarea id="free-time-note" name="free-time-note" class="form-control" rows="1">{{ formal.free_time_note }}</textarea>
+            </div>
+        </div>
+        {% endwith %}
+        <div class="row">
+            <p class="col-sm-4"><strong>计费模式：</strong></p>
+        </div>
+        {% with cm=pgbg_product.charge_mode %}
+        <div class="row">
+            <div class="form-group col-sm-4">
+                <label for="contract-date-start" class="control-label">合同开始日期：</label>
+                <div class="input-group date form_date" data-date-format="yyyy-mm-dd">
+                    <input name="contract-date-start" class="form-control" size="12" type="text" value="{{ cm.contract_start_date }}" placeholder="必填" readonly required>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div>
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="contract-date-end" class="control-label">合同截至日期：</label>
+                <div class="input-group date form_date" data-date-format="yyyy-mm-dd">
+                    <input name="contract-date-end" class="form-control" size="12" type="text" value="{{ cm.contract_end_date }}" placeholder="必填" readonly required>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-4">
+                <label for="basic-service-charge" class="control-label">基础服务费(元)</label>
+                <input id="basic-service-charge" name="basic-service-charge" type="number" min=0 class="form-control" value="{{ cm.basic_service_charge }}" placeholder="必填" required>
+                <p class="text-danger">网页版对接有基础服务费，API对接无基础服务费</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="charge-mode" value="1" {% ifequal cm.mode "1" %}checked{% endifequal %}>方案一：子产品按量计费，选择后请在对接产品中填写购买产品的单价
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="charge-mode" value="2" {% ifequal cm.mode "2" %}checked{% endifequal %}>方案二：按授信额比例计费
+                    </label>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-4" style="margin-left: 20px">
+                        <label for="hit-price" class="control-label">请说明每个命中客户的价格：</label>
+                        <input id="hit-price" name="hit-price" type="number" min="0" step="0.1" value="{{ cm.hit_price }}" placeholder="必填" class="form-control" required {% ifnotequal cm.mode "2" %}disabled{% endifnotequal %}>
+                    </div>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="charge-mode" value="3" {% ifequal cm.mode "3" %}checked{% endifequal %}>方案三：风险共担模式，选择后请在对接产品中填写购买产品的单价与风险共担的具体比例
+                    </label>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-8" style="margin-left: 20px">
+                        <label for="fxgd-note" class="control-label">风险共担的模式说明：</label>
+                        <textarea id="fxgd-note" name="fxgd-note" class="form-control" rows="2" placeholder="必填" required {% ifnotequal cm.mode "3" %}disabled{% endifnotequal %}>{{ cm.fxgd_note }}</textarea>
+                    </div>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="charge-mode" value="4" {% ifequal cm.mode "4" %}checked{% endifequal %}>方案四：包年计费（元/月）
+                    </label>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-2" style="margin-left: 20px">
+                        <input id="year-price" name="year-price" type="number" min="0" step="1" value="{{ cm.year_price }}" placeholder="必填(单位：元)" class="form-control" required {% ifnotequal cm.mode "4" %}disabled{% endifnotequal %}/>
+                    </div><div class="form-group col-sm-2" style="margin-left: 20px">
+                        <input id="month-price" name="month-price" type="number" min="0" step="1" value="{{ cm.month_price }}" placeholder="必填(单位：月)"   class="form-control"  required {% ifnotequal cm.mode "4" %}disabled{% endifnotequal %}/>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% endwith %}
+        </fieldset>
+    </div>
+    <table class="table table-bordered" style="margin-top: 5px;">
+        <thead>
+            <tr>
+                <th>产品类别</th>
+                <th>产品名称</th>
+            </tr>
+        </thead>
+        <tbody id="pgbg">
+        {% with m_selected=pgbg_product.product_selected %}
+            {% for type, modules in data_modules.items %}
+                <tr>
+                    <th style="width: 10%;">{% if type == "ter" %}反欺诈/信用评估{% elif type == "score" %}评分{% elif type == "rule" %}规则{% else %}{{ type }}{% endif %}</th>
+                    <td>
+                    {% ifequal type "score" %}
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <select name="score" id="score" class="form-control">
+                                    <option value="0">--请选择--</option>
+                                    {% for ms in modules %}
+                                        {% for m in ms %}
+                                        <option value="{{ m.id }}" {% if m.id in m_selected %}selected{% endif %}>{{ m.name }}({{ m.code }})</option>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="input-group col-sm-3 module-price" style="display: none;">
+                                <input name="score-price" type="number" min="0" step="0.1" value="{{ score_price }}" class="form-control" {% if not score_price %}disabled{% endif %} required>
+                                <div class="input-group-addon">单价(元)</div>
+                            </div>
+                        </div>
+                    {% else %}
+                        {% for ms in modules %}
+                        <div class="row">
+                            {% for m in ms %}
+                            <div class="col-sm-6">
+                            <div class="row flag">
+                            <div class="checkbox col-sm-6">
+                                <label><input type="checkbox" value="{{ m.id }}" id="{{ m.code }}" name="pgbg-m" {% if m.id in m_selected %}checked{% endif %}>{{ m.name }}({{ m.code }})</label>
+                            </div>
+                            <div class="input-group col-sm-4 module-price" {% if m.id not in m_selected or account_type == "1" %}style="display: none;"{% endif %}>
+                                <input name="pgbg-{{ m.id }}-price" type="number" min="0" step="0.1" value="{{ m_selected|get_dict_price:m.id }}" class="form-control" {% if m.id not in m_selected or account_type == "1" %}disabled{% endif %} required>
+                                <div class="input-group-addon">单价(元)</div>
+                            </div>
+                            </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    {% endifequal %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endwith %}
+        </tbody>
+    </table>
+
+    <div class="row">
+        <h5 class="col-sm-4"><strong>二、海纳API系列产品</strong></h5>
+    </div>
+    <div class="row">
+        <div class="col-sm-12" style="margin-top: 5px">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>产品类别</th>
+                    <th>产品名称</th>
+                    <th id="hnapi-val-title" style="width: 20%;">{% ifequal account_type "1" %}测试总条数{% else %}单价（元）{% endifequal %}</th>
+                    <th>其他说明</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for m in hnapi_modules %}
+            <tr>
+                <th>{{ m.category }}</th>
+                <td>
+                    <div class="checkbox">
+                        <label><input type="checkbox" value="{{ m.id }}" id="{{ m.code }}" name="hnapi-m" {% if m.id in HNApi_selected %}checked{% endif %}>{{ m.name }}</label>
+                    </div>
+                </td>
+                <td><input type="number" min="0" step="1" name="hnapi-{{ m.id }}-val" class="form-control hnapi-val" value="{{ HNApi_selected|get_dict_val:m.id }}" {% if m.id not in HNApi_selected %}disabled{% endif %} required></td>
+                <td><textarea name="hnapi-{{ m.id }}-note" class="form-control" rows="1" {% if m.id not in HNApi_selected %}disabled{% endif %}>{{ HNApi_selected|get_dict_note:m.id }}</textarea></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+    <div class="page-header">
+        <h4><span class="label label-default">个性化配置：</span></h4>
+    </div>
+    <div class="row">
+        <div class="col-sm-8">
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th class="col-sm-3">客制化评分:</th>
+                    <td class="col-sm-9"><textarea name="cus-pf" class="form-control" rows="1" placeholder="如有个性化配置，请联系风控经理协助">{{ cus_config.cus_pf }}</textarea></td>
+                </tr>
+                <tr>
+                    <th>自定义数据:</th>
+                    <td><textarea name="cus-data" class="form-control" rows="1" placeholder="预置数据项的名称，如无请附上新数据项逻辑">{{ cus_config.cus_data }}</textarea></td>
+                </tr>
+                <tr>
+                    <th>借款反欺诈规则-黑名单:</th>
+                    <td><textarea name="rule-blk-sheet" class="form-control" rows="1" placeholder="说明修改要求，包括不启用的规则，修改默认权重或条件的规则">{{ cus_config.rule_blk_sheet }}</textarea></td>
+                </tr>
+                <tr>
+                    <th>借款反欺诈规则-多次申请:</th>
+                    <td><textarea name="rule-multi-apply" class="form-control" rows="1" placeholder="说明修改要求，包括不启用的规则，修改默认权重或条件的规则">{{ cus_config.rule_multi_apply }}</textarea></td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    <div class="page-header" style="margin-bottom: 0">
+        <h4><span class="label label-default">雷达平台权限：</span></h4>
+        <p class="text-danger">说明：写明可以在雷达平台能查询该用户使用情况的商务同事，（商务大区经理、大区风控经理和VP自动有权限，不用列出）</p>
+    </div>
+    <div class="form-group">
+        <label for="radar-permission" class="control-label"></label>
+        <textarea id="radar-permission" name="radar-permission" class="form-control" rows="3">{{ radar_permission }}</textarea>
+    </div>
+    <div class="page-header" style="margin-bottom: 0">
+        <h4><span class="label label-default">备注：</span></h4>
+    </div>
+    <div class="form-group">
+        <label for="notes" class="control-label"></label>
+        <textarea id="notes" name="notes" class="form-control" rows="3">{{ notes }}</textarea>
+    </div>
+    <input type="text" id="action" name="action" value="submit" hidden>
+    <div align="center">
+        <button type="button" value="save" id="save-btn" class="btn btn-success">保存</button>
+        <button type="button" value="submit" id="submit-btn" class="btn btn-info">提交</button>
+        <button type="button" class="btn btn-danger" onclick="backtopage()">返回</button>
+    </div>
+</form>
+<script src="{% static "/static/jquery/jquery-1.11.3.min.js" %}"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script>
+$(document).ready(function(){
+    var testPanel = $('#test-panel').children('fieldset');
+    var formalPanel = $('#formal-panel').children('fieldset');
+    var modulePrice = $('.module-price');
+    var oScore = $('#score');
+    var impForm = $('#impForm');
+    var webModules = null;  // 网页版支持的模块
+    var noTestModules = null;  // 不支持测试的模块
+
+    function makeObjStatus(nameArr, enabled) {
+        // 设置产品模块的禁用和可用状态
+        for (var i=0; i<nameArr.length; i++) {
+            var obj = $('#'+nameArr[i]);
+            if (enabled) {
+                obj.removeAttr('disabled');
+                obj.parent().css('text-decoration', '');
+            } else {
+                obj.attr('disabled', 'disabled');
+                obj.parent().css('text-decoration', 'line-through');
+            }
+        }
+    }
+
+    $.getJSON('/crm/imp/page/config/', function(ret){
+        if (ret['msg'] == 0) {
+            webModules = ret['data']['web_modules'];
+            noTestModules = ret['data']['no_test'];
+            if ($('input[name=account-type]:checked').val() === "1"){
+                // 如果账号类型是测试,那么初始化禁用不支持测试的模块
+                makeObjStatus(noTestModules, false)
+            }
+            var modes = getCheckedArray('imp-mode');
+            if (modes.length === 1 && modes[0] === 'web') {
+                $('input[name=pgbg-m]').each(function(){
+                    var self = $(this);
+                    if (webModules.indexOf(self.attr('id')) === -1) {
+                        self.attr('disabled', 'disabled');
+                        self.parent().css('text-decoration', 'line-through');
+                    }
+                });
+            }
+        } else {
+            alert(ret['msg']);
+        }
+    });
+
+    (function(){
+        // 初始化id=advice-imp-date-start(建议开始对接的日期)
+        function getDateStr(offset) {
+            var date = new Date();
+            date.setDate(date.getDate() + offset);
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            var d = date.getDate();
+            return y + "-" + m + "-" + d;
+        }
+        var initDate = getDateStr(4);
+        var oImpDateStart = $('#imp-date-start');
+        if (oImpDateStart.val() === "") {
+            oImpDateStart.val(initDate);
+        }
+        $('#advice-imp-date-start').datetimepicker({
+            language: 'zh-CN',
+            weekStart: 1,
+            todayBtn: 1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            minView: 2,
+            forceParse: 0,
+            startDate: initDate,
+            initialDate: initDate
+        });
+    })();
+
+    function makeModulePriceDisabled(disabled) {
+        if (disabled) {
+            $('input[name=score-price]').attr('disabled', 'disabled');
+            modulePrice.each(function(){
+                $(this).children('input').attr('disabled', 'disabled');
+            });
+        } else {
+            if (oScore.val() !== "0") {
+                // 评分模块select有选中
+                $('input[name=score-price]').removeAttr('disabled');
+            }
+            modulePrice.each(function(){
+                // 如果该单价(modulePrice)控件对应的产品模块(pgbg-m)是checked状态并且没有被禁用,
+                // 那么移除该单价(modulePrice)控件的禁用状态
+                var oInput = $(this).parent().find('input[name=pgbg-m]');
+                if (oInput.is(':checked') && oInput.attr("disabled") !== "disabled") {
+                    $(this).children('input').removeAttr('disabled');
+                }
+            });
+        }
+    }
+
+    (function(){
+        // 根据账号类型初始化页面
+        var aType = $('input[name=account-type]:checked').val();
+        if (aType === '1') {
+            // 测试账号
+            testPanel.show();
+            testPanel.removeAttr('disabled');
+            formalPanel.hide();
+            formalPanel.attr('disabled', 'disabled');
+            modulePrice.hide();
+            $('input[name=score-price]').hide();
+            makeModulePriceDisabled(true);
+            $('#hnapi-val-title').text("测试条数");  // 设置海纳api模块的表格头(测试账号:测试条数,正式账号:单价(元))
+            $('input.hnapi-val').attr("step", '1');  // 变换hnapi模块input的step 测试账号:条数(没有小数),正式账号:单价(有小数)
+        } else if (aType === '2') {
+            // 正式账号
+            formalPanel.show();
+            formalPanel.removeAttr('disabled');
+            testPanel.hide();
+            testPanel.attr('disabled', 'disabled');
+            var chargeMode = $('input[name=charge-mode]:checked').val();
+            if ( chargeMode === "2") {
+                // 如果付费模式是方案二,那么隐藏并禁用module-price
+                modulePrice.hide();
+                makeModulePriceDisabled(true);
+                $('input[name=score-price]').attr('disabled', 'disabled');
+            } else if (chargeMode === "1" || chargeMode === "3") {
+                modulePrice.show();
+                $('input[name=score-price]').show();
+                makeModulePriceDisabled(false);
+            }
+            $('#hnapi-val-title').text("单价（元）");
+            $('input.hnapi-val').attr("step", '0.1');
+        }
+    })();
+
+    function makeDisabledUnselected() {
+        // 取消禁用模块的checked状态
+        $('input[name=pgbg-m]').each(function(){
+            var self = $(this);
+            if (self.prop('disabled') && self.is(':checked')) {
+                self.removeAttr('checked');
+                self.parents('div.flag').find('input[type=number]').attr('disabled', 'disabled');
+            }
+        });
+    }
+
+    $('input[name=account-type]').change(function(){
+        var accountType = $(this).val();
+        if (accountType === '1') {
+            // 测试账号
+            testPanel.show();
+            testPanel.removeAttr('disabled');
+            formalPanel.hide();
+            formalPanel.attr('disabled', 'disabled');
+            modulePrice.hide();
+            $('input[name=score-price]').hide();
+            makeModulePriceDisabled(true);
+            makeObjStatus(noTestModules, false);  // 禁用不支持测试的模块
+            $('#hnapi-val-title').text("测试条数");
+            $('input.hnapi-val').attr("step", '1');
+        } else if (accountType === '2') {
+            // 正式账号
+            formalPanel.show();
+            formalPanel.removeAttr('disabled');
+            testPanel.hide();
+            testPanel.attr('disabled', 'disabled');
+            if ($('input[name=charge-mode]:checked').val() !== "2") {
+                modulePrice.show();
+                $('input[name=score-price]').show();
+                makeModulePriceDisabled(false);
+            }
+            makeObjStatus(noTestModules, true);  // 去掉不支持测试的模块的禁用属性
+            $('#hnapi-val-title').text("单价（元）");
+            $('input.hnapi-val').attr('step', '0.1');
+        }
+        makeDisabledUnselected();
+    });
+
+    $('input[name=imp-mode]').change(function(){
+        // 如果交付形式只有web一项, 那么就禁用web版可选模块以外的其他模块
+        var modes = getCheckedArray('imp-mode');
+        if (modes.length === 1 && modes[0] === 'web') {
+            $('input[name=pgbg-m]').each(function(){
+                var self = $(this);
+                if (webModules.indexOf(self.attr('id')) === -1) {
+                    self.attr('disabled', 'disabled');
+                    self.parent().css('text-decoration', 'line-through');
+                }
+            });
+        } else {
+            $('input[name=pgbg-m]').each(function(){
+                var self = $(this);
+                if (noTestModules.indexOf(self.attr('id')) === -1) {
+                    self.removeAttr('disabled');
+                    self.parent().css('text-decoration', '');
+                }
+            });
+        }
+        makeDisabledUnselected();
+    });
+
+    $('input[name=charge-mode]').change(function(){
+        var mode = $(this).val();
+        if (mode === '1') {
+            modulePrice.show();
+            $('input[name=score-price]').show();
+            makeModulePriceDisabled(false);
+            $('#hit-price').attr('disabled', 'disabled');
+            $('#fxgd-note').attr('disabled', 'disabled');
+            $('#year-price').attr('disabled', 'disabled');
+            $('#month-price').attr('disabled', 'disabled');
+        } else if (mode === '2') {
+            modulePrice.hide();
+            $('input[name=score-price]').hide();
+            makeModulePriceDisabled(true);
+            $('#hit-price').removeAttr('disabled');
+            $('#fxgd-note').attr('disabled', 'disabled');
+            $('#year-price').attr('disabled', 'disabled');
+            $('#month-price').attr('disabled', 'disabled');
+        } else if (mode === '3') {
+            modulePrice.show();
+            $('input[name=score-price]').show();
+            makeModulePriceDisabled(false);
+            $('#hit-price').attr('disabled', 'disabled');
+            $('#fxgd-note').removeAttr('disabled');
+            $('#year-price').attr('disabled', 'disabled');
+            $('#month-price').attr('disabled', 'disabled');
+        } else if (mode === '4') {
+            modulePrice.hide();
+            $('input[name=score-price]').hide();
+            makeModulePriceDisabled(true);
+            $('#hit-price').attr('disabled', 'disabled');
+            $('#fxgd-note').attr('disabled', 'disabled');
+            $('#year-price').removeAttr('disabled');
+            $('#month-price').removeAttr('disabled');
+        } 
+    });
+
+    $('input[name=pgbg-m]').change(function(){
+        var oCheckbox = $(this);
+        var oDiv = oCheckbox.parents('div.flag');
+        if (oCheckbox.is(':checked') && $('input[name=account-type]:checked').val() === '2' && $('input[name=charge-mode]:checked').val() !== '2') {
+            oDiv.find('input[type=number]').removeAttr('disabled');
+        } else {
+            oDiv.find('input[type=number]').attr('disabled', 'disabled');
+        }
+    });
+
+    oScore.change(function(){
+        if (oScore.val() !== '0' && $('input[name=account-type]:checked').val() === '2' && $('input[name=charge-mode]:checked').val() !== '2') {
+            $('input[name=score-price]').removeAttr('disabled');
+        } else {
+            $('input[name=score-price]').attr('disabled', 'disabled');
+        }
+    });
+
+    $('input[name=hnapi-m]').change(function(){
+        var oCheckbox = $(this);
+        var oTr = oCheckbox.parents('tr');
+        if (oCheckbox.is(':checked')) {
+            oTr.find('input[type=number]').removeAttr('disabled');
+            oTr.find('textarea').removeAttr('disabled');
+        } else {
+            oTr.find('input[type=number]').attr('disabled', 'disabled');
+            oTr.find('textarea').attr('disabled', 'disabled');
+        }
+    });
+
+    function checkForm() {
+        var oContact = $('#contact');
+        if (oContact.val() === '0'){
+            alert('请选择联系人');
+            oContact.focus();
+            return false;
+        }
+        var oAnalyser = $('#analyser');
+        if (oAnalyser.val() === '0'){
+            alert('请选择风控经理');
+            oAnalyser.focus();
+            return false;
+        }
+        var oOperations = $('#operations');
+        if (oOperations.val() === '0'){
+            alert('请选择运营经理');
+            oOperations.focus();
+            return false;
+        }
+        var oImpTarget = $('#imp-target');
+        if (oImpTarget.val() === '0'){
+            alert('请选择此次交付的目的');
+            oImpTarget.focus();
+            return false;
+        }
+        var oMultiApply1 = $('#multi-apply1');
+        var oMultiApply2 = $('#multi-apply2');
+        if (!oMultiApply1.is(':checked') && !oMultiApply2.is(':checked')){
+            alert('请选择转正后是否计入多次申请');
+            oMultiApply1.focus();
+            return false;
+        }
+        var accountType = $('input[name=account-type]:checked').val();
+        var oFreePeriod = $('#free-period');
+        if (oFreePeriod.val() === '' && accountType === '2'){
+            alert('请选择免费期限');
+            oFreePeriod.focus();
+            return false;
+        }
+        if (accountType === '1') {
+            var apiCount = parseInt($('#api-count').val());
+            var webCount = parseInt($('#web-count').val());
+            if (apiCount > 50 || webCount > 1000) {
+                if ($('#email-pic-thumb').length == 0 && $('#email-pic').val() == '') {
+                    alert('请选择Frank邮件确认截图');
+                    return false;
+                }
+            }
+        } else if (accountType === "2") {
+            var chargeMode = $('input[name=charge-mode]:checked').val();
+            if (chargeMode === undefined){
+                alert('还没有选择付费模式');
+                return false;
+            }
+        }
+        var pgbg = getCheckedArray('pgbg-m').length;
+        var hnapi = getCheckedArray('hnapi-m').length;
+        var oScore = $('#score');
+        if (oScore.val() === '0' && pgbg === 0 && hnapi ===0) {
+            alert('还没有选择要交付的产品');
+            return false;
+        }
+        var scoreText = oScore.find("option:selected").text();
+        if (scoreText === '客制化评分(ScoreCust)') {
+            var oCusPf = $('textarea[name=cus-pf]');
+            if (!oCusPf.val()) {
+                alert('您选择了<客制化评分>模块,请填写相应个性化配置');
+                oCusPf.focus();
+                return false;
+            }
+        }
+        if ($('#DataCust').prop('checked')) {
+            var oCusData = $('textarea[name=cus-data]');
+            if (!oCusData.val()) {
+                alert('您选择了<自定义数据>模块,请填写相应个性化配置');
+                oCusData.focus();
+                return false;
+            }
+        }
+        var oInputs = impForm.find('input:required:enabled');
+        for (var i=0; i < oInputs.length; i++) {
+            var self = $(oInputs[i]);
+            if (self.val() === "" && oInputs[i].id !== ""){
+                alert('有必填项未填，请完成');
+                console.log(self.attr('name'));
+                self.focus();
+                return false;
+            }
+        }
+        var oTextareas = impForm.find('textarea:required:enabled');
+        for (var j=0; j < oTextareas.length; j++) {
+            var obj = $(oTextareas[j]);
+            if (obj.val() === ""){
+                alert('有必填项未填');
+                console.log(obj.attr('name'));
+                obj.focus();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    $('#save-btn').click(function(){
+        loading(true);
+        $('#action').val("save");
+        impForm.submit();
+    });
+
+    $('#submit-btn').click(function(){
+        loading(true);
+        $('#action').val("submit");
+        if (checkForm()) {
+            impForm.submit();
+        } else {
+            loading(false);
+        }
+    });
+});
+</script>

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block title %}交付申请--编辑{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    {% if history_imp_apply %}
+    <div class="panel panel-info panel-table">
+        <div class="panel-heading">
+            <h3 class="panel-title">历史申请记录</h3>
+        </div>
+        <div class="panel-body">
+        <table class="table table-bordered table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th>单号</th>
+                    <th>所属项目</th>
+                    <th>客户id</th>
+                    <th>所属客户</th>
+                    <th>产品</th>
+                    <th>风控经理</th>
+                    <th>申请人</th>
+                    <th>状态</th>
+                    <th>申请时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for imp_apply in history_imp_apply %}
+                <tr>
+                    <th scope="row">{{ imp_apply.id }}</th>
+                    <td>{{ imp_apply.project.name }}</td>
+                    <td>{{ imp_apply.project.customer.id }}</td>
+                    <td>{{ imp_apply.project.customer.name }}</td>
+                    <td>{{ imp_apply.product.name }}</td>
+                    <td>{{ imp_apply.analyser.user.first_name }}</td>
+                    <td>{{ imp_apply.applicant.user.first_name }}</td>
+                    <td>{{ imp_apply.progress }}</td>
+                    <td>{{ imp_apply.create_time | date:"Y-m-d H:i" }}</td>
+                    <td>
+                        <a href="{{ imp_apply.get_absolute_url }}" target="_blank" class="btn btn-link btn-tb" role="button">查看</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+    {% endif %}
+    <div class="panel panel-info panel-table" style="margin: 10px auto;">
+        <div class="panel-heading">
+            <h3 class="panel-title">申请交付--编辑</h3>
+        </div>
+        <div class="panel-body">
+            {% include "_messages.html" %}
+            {% if product.mark == "fx" %}
+                {% include "form-fx.html" %}
+            {% else %}
+                {% bootstrap_alert "此产品暂不支持交付" alert_type='danger' %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block modal %}
+<div class="modal fade" id="contact-add-modal" tabindex="-1" role="dialog" aria-labelledby="contact-add-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><strong>联系人信息</strong></h4>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="contact-name" class="control-label">姓名：</label>
+                        <input name="contact-name" type="text" class="form-control" placeholder="必填" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-pos" class="control-label">职位：</label>
+                        <input id="contact-pos" name="contact-pos" type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-tel" class="control-label">办公电话：</label>
+                        <input id="contact-tel" name="contact-tel" type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-mobile" class="control-label">手机：</label>
+                        <input name="contact-mobile" type="text" class="form-control" placeholder="必填" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-mail" class="control-label">电子邮箱：</label>
+                        <input name="contact-mail" type="email" class="form-control" placeholder="必填" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="ajaxContactCreate({{ project.id }})">添加</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

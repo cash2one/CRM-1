@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block title %}交付申请{% endblock %}
+{% block content %}
+
+<style type="text/css">
+    .export_impapply_data {
+        
+        /* display: inline-block;
+        padding-left: 100px; */
+
+        padding: 10px;
+    }
+</style>
+    <div class="container-fluid">
+        <ul class="filter">
+            <li>
+                <p><strong>客户级别：</strong></p>
+                <a href="{% url 'imp-apply-list' priority=0 progress=progress product_id=product_id %}?{{ query_param }}" {% ifequal priority 0 %}class="selected"{% endifequal %}>不限<span></span></a>
+                {% for val, text in customer_priority %}
+                    <a href="{% url 'imp-apply-list' priority=val progress=progress product_id=product_id %}?{{ query_param }}" {% ifequal priority val %}class="selected"{% endifequal %}>{{ text }}<span></span></a>
+                {% endfor %}
+            </li>
+            <li>
+                <p><strong>产品：</strong></p>
+                <a href="{% url 'imp-apply-list' progress=progress priority=priority product_id=0 %}?{{ query_param }}" {% ifequal product_id 0 %}class="selected"{% endifequal %}>不限<span></span></a>
+                {% for product in products %}
+                    <a href="{% url 'imp-apply-list' progress=progress priority=priority product_id=product.id %}?{{ query_param }}" {% ifequal product_id product.id %}class="selected"{% endifequal %}>{{ product.name }}<span></span></a>
+                {% endfor %}
+            </li>
+        </ul>
+        <form class="form-inline" action="{{ request.path }}" method="post" style="margin-bottom: 5px">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" class="form-control" id='project_name' name="project_name" value="{{ project_name }}" placeholder="项目名称">
+                <span class="input-group-btn">
+                    <button class="btn btn-info" type="submit">查询</button>
+                </span>
+            </div>
+
+              <div align="left" class="export_impapply_data" >
+        
+                        <a href="{% url 'export-data-impapply' progress=progress priority=priority product_id=product_id project_name=project_name %}?{{query_param }}" target="_blank" role="button" class="btn btn-success">&nbsp;&nbsp;导出&nbsp;&nbsp;</a>       
+                </div>
+        </form>
+    </div>
+    <!-- 信息列表 -->
+    <div class="container-fluid">
+        <ul class="nav nav-tabs">
+            <li role="presentation" {% ifequal progress 1 %}class="active"{% endifequal %}><a href="{% url 'imp-apply-list' progress=1 priority=priority product_id=product_id %}?{{ query_param }}">所有申请</a></li>
+            {% ifequal user.usercredit.role.role "商务" %}<li role="presentation" {% ifequal progress 2 %}class="active"{% endifequal %}><a href="{% url 'imp-apply-list' progress=2 priority=priority product_id=product_id %}?{{ query_param }}">待提交</a></li>{% endifequal %}
+            <!--            <li role="presentation" {% ifequal progress 3 %}class="active"{% endifequal %}><a href="{% url 'imp-apply-list' progress=3 priority=priority product_id=product_id %}?{{ query_param }}">待风控经理审核</a></li> -->
+            <li role="presentation" {% ifequal progress 4 %}class="active"{% endifequal %}><a href="{% url 'imp-apply-list' progress=4 priority=priority product_id=product_id %}?{{ query_param }}">待运营经理审核</a></li>
+            <li role="presentation" {% ifequal progress 5 %}class="active"{% endifequal %}><a href="{% url 'imp-apply-list' progress=5 priority=priority product_id=product_id %}?{{ query_param }}">待交付</a></li>
+            <li role="presentation" {% ifequal progress 6 %}class="active"{% endifequal %}><a href="{% url 'imp-apply-list' progress=6 priority=priority product_id=product_id %}?{{ query_param }}">交付中</a></li>
+            <li role="presentation" {% ifequal progress 7 %}class="active"{% endifequal %}><a href="{% url 'imp-apply-list' progress=7 priority=priority product_id=product_id %}?{{ query_param }}">交付完成</a></li>
+            <li role="presentation" {% ifequal progress 8 %}class="active"{% endifequal %}><a href="{% url 'imp-apply-list' progress=8 priority=priority product_id=product_id %}?{{ query_param }}">退回的申请</a></li>
+           <!-- <li role="presentation" {% ifequal progress 9 %}class="active"{% endifequal %}><a href="{% url 'imp-apply-list' progress=9 priority=priority product_id=product_id %}?{{ query_param }}">指回的申请</a></li> -->
+
+        </ul>
+        <table class="table table-bordered table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th>单号</th>
+                    <th>所属项目</th>
+                    <th>客户id</th>
+                    <th>所属客户</th>
+                    <th>产品</th>
+                    <th>交付目的</th>
+                    <th>申请人</th>
+                    <th>状态</th>
+                    <th>申请时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for imp_apply in page.object_list %}
+                <tr>
+                    <th scope="row">{{ imp_apply.id }}</th>
+                    <td><a href="{{ imp_apply.project.get_absolute_url }}" class="btn btn-link btn-tb" role="button">{{ imp_apply.project.name }}</a></td>
+                    <td>{{ imp_apply.project.customer.id }}</td>
+                    <td><a href="{{ imp_apply.project.customer.get_absolute_url }}" class="btn btn-link btn-tb" role="button">{{ imp_apply.project.customer.name }}</a></td>
+                    <td>{{ imp_apply.product.name }}</td>
+                    <td>{{ imp_apply.extra_fields.target }}</td>
+                    <td>{{ imp_apply.applicant.user.first_name }}</td>
+                    <td>{{ imp_apply.get_progress_display }}</td>
+                    <td>{{ imp_apply.create_time | date:"Y-m-d H:i" }}</td>
+                    <td>
+                        <a href="{{ imp_apply.get_absolute_url }}" class="btn btn-link btn-tb" role="button">查看</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div align="center">
+        {% bootstrap_pagination page url=request.path extra=query_param size="small" %}
+    </div>
+
+{% endblock %}

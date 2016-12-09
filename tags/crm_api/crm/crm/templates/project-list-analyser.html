@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% load myfilter %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+    <!-- 筛选 -->
+    <div class="container-fluid">
+        <ul class="filter">
+            <li>
+                <p><strong>项目优先级：</strong></p>
+                {% if priority == 0 %}
+                    <a href="{% url 'project-list-analyser' tstate=tstate priority=0 productid=productid page_id=page_id %}" class="selected">不限<span></span></a>
+                {% else %}
+                    <a href="{% url 'project-list-analyser' tstate=tstate priority=0 productid=productid page_id=page_id %}">不限<span></span></a>
+                {% endif %}
+                {% for val, text in project_priority %}
+                    {% if val == priority %}
+                        <a href="{% url 'project-list-analyser' tstate=tstate priority=val productid=productid page_id=page_id %}" class="selected">{{ text }}<span></span></a>
+                    {% else %}
+                        <a href="{% url 'project-list-analyser' tstate=tstate priority=val productid=productid page_id=page_id %}">{{ text }}<span></span></a>
+                    {% endif %}
+                {% endfor %}
+            </li>
+            <li>
+                <p><strong>产品：</strong></p>
+                {% if productid == 0 %}
+                    <a href="{% url 'project-list-analyser' tstate=tstate priority=priority productid=0 page_id=page_id %}" class="selected">不限<span></span></a>
+                {% else %}
+                    <a href="{% url 'project-list-analyser' tstate=tstate priority=priority productid=0 page_id=page_id %}">不限<span></span></a>
+                {% endif %}
+                {% for product in products %}
+                    {% if product.id == productid %}
+                        <a href="{% url 'project-list-analyser' tstate=tstate priority=priority productid=product.id page_id=page_id %}" class="selected">{{ product.name }}<span></span></a>
+                    {% else %}
+                        <a href="{% url 'project-list-analyser' tstate=tstate priority=priority productid=product.id page_id=page_id %}" class="">{{ product.name }}<span></span></a>
+                    {% endif %}
+                {% endfor %}
+            </li>
+        </ul>
+
+        <!-- 自定义查询 -->
+        <form class="form-inline" action="" method="post">{% csrf_token %}
+            <div class="form-group">
+                <label for="project-name" class="control-label">项目名称：</label>
+                <input name="project-name" type="text" class="form-control input-box" value="{{ project_name }}" placeholder="项目名称">
+            </div>
+            <div class="form-group">
+                <label for="customer-name" class="control-label">客户名称：</label>
+                <input name="customer-name" type="text" class="form-control input-box" value="{{ customer_name }}" placeholder="客户名称">
+            </div>
+            <button type="submit" class="btn btn-success form-group">查询</button>
+        </form>
+    </div>
+
+    <!-- 信息列表 -->
+    <div class="container-fluid">
+        <div align="left">
+            <br>
+            <a href="{% url 'export-projects' %}?{{ export_url_param }}" target="_blank" role="button" class="btn btn-success">&nbsp;&nbsp;导出&nbsp;&nbsp;</a>
+        </div>
+        <br>
+        <div>
+            <table class="table table-bordered table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>项目名称</th>
+                        <th>所属客户</th>
+                        <th>产品</th>
+                        <th>优先级</th>
+                        <th>状态</th>
+                        <th>跟进商务</th>
+                        <th>最新进度</th>
+                        <th>最新进展</th>
+                        <th>下一步计划</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for project in page.object_list %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ project.name }}</td>
+                        <td>{{ project.customer.name }}</td>
+                        <td>{{ project.get_products_name }}</td>
+                        <td>{{ project.get_priority_display }}</td>
+                        <td>{{ project.get_state }}</td>
+                        <td>{{ project.get_businessmans_name }}</td>
+                        <td>{{ project.get_cur_progress.progress }}</td>
+                        <td style="width: 25%">{{ project.get_cur_progress.desc }}</td>
+                        <td style="width: 20%">{{ project.get_cur_progress.plan }}</td>
+                        {% if tstate == "tested" %}
+                            <td><a href="{% url 'project-view' project.id %}" class="btn btn-link btn-tb" role="button">查看</a></td>
+                        {% else %}
+                        <td>
+                            <a href="{% url 'project-view' project.id %}" class="btn btn-link btn-tb" role="button">查看</a>
+                            <button type="button" class="btn btn-link btn-tb" value="{{ project.id }},{{ project.name }}" onclick="show_update_progress(this)">更新</button>
+                            <a href="{% url 'project-apply-test-view' project.get_apply_test_id %}" class="btn btn-link btn-tb" role="button">查看测试申请</a>
+                        </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 分页 -->
+    <div class="container-fluid" align="center">
+        <nav>
+            <ul class="pagination">
+                {% if page.has_previous %}
+                    <li><a href="{% url 'project-list-analyser' tstate=tstate priority=priority productid=productid page_id=page.previous_page_number %}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                {% endif %}
+
+                {% for num in page.paginator.page_range %}
+                    {% if num == page.number %}
+                        <li class='active'><a href="{% url 'project-list-analyser' tstate=tstate priority=priority productid=productid page_id=num %}">{{num}}</a></li>
+                    {% else %}
+                        <li><a href="{% url 'project-list-analyser' tstate=tstate priority=priority productid=productid page_id=num %}">{{num}}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page.has_next %}
+                    <li><a href="{% url 'project-list-analyser' tstate=tstate priority=priority productid=productid page_id=page.next_page_number %}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+{% endblock %}
+{% if tstate != "tested" %}
+    {% block modal %}
+        <!-- update-Modal -->
+        <div class="modal fade" id="update-progress-modal" tabindex="-1" role="dialog" aria-labelledby="update-progress-model" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><strong></strong></h4>
+                    </div>
+                    <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label class="control-label">最新进度：</label>
+                            <select name="progress" class="form-control" disabled>
+                                <option value="3">测试/试用</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dtp_input1" class="control-label">更新时间：</label>
+                            <div class="input-group date form_date" data-date-format="yyyy-mm-dd" data-link-field="dtp_input1">
+                                <input name="datetime" class="form-control" size="12" type="text" value="" placeholder="缺省当前时间" readonly>
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">测试进度：</label>
+                            <select name="test-progress" class="form-control">
+                                <option value="2">测试中</option>
+                                <option value="3">测试完成</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">最新进展：</label>
+                            <textarea name="description" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="plan" class="control-label">下一步计划：</label>
+                            <textarea name="plan" class="form-control" rows="3"></textarea>
+                        </div>
+                    </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" value="" onclick="update_test_progress(this)">保存</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div><!-- end update-Modal -->
+    {% endblock %}
+{% endif %}

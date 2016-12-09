@@ -1,0 +1,63 @@
+/*
+ * Globals
+ */
+
+html,
+body {
+  height: 100%;
+  background: url(../images/bg-login.jpg) no-repeat;
+  filter:"progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale')";  
+  -moz-background-size:100% 100%;
+      background-size:100% 100%;
+}
+
+body {
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0,0,0,.5);
+}
+
+.signin-box{
+  background: rgba(0, 0, 0, 0.7);
+  padding: 40px;
+  border-color: #DDDDDD;
+  border-radius: 9px;
+  border-width: 1px;
+  border-style: solid
+}
+
+.site-wrapper {
+  display: table;
+  width: 100%;
+  height: 100%; /* For at least Firefox */
+  min-height: 100%;
+  -webkit-box-shadow: inset 0 0 100px rgba(0,0,0,.5);
+          box-shadow: inset 0 0 100px rgba(0,0,0,.5);
+}
+
+.site-wrapper-inner {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.cover-container {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/*
+ * Affix and center
+ */
+
+@media (min-width: 768px) {
+
+  .signin-box{
+    max-width: 480px;
+  }
+
+.cover-container {
+  margin-left: 32%;
+  margin-right: 32%;
+}
+
+}

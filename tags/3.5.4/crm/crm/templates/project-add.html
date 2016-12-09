@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}添加项目{% endblock %}
+{% block content %}
+
+    <div class="container-fluid">
+        <form class="form-horizontal">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <p><strong>基本信息</strong></p>
+                    <hr>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="project-name" class="control-label col-sm-4">项目名称：</label>
+                    <div class="col-sm-8">
+                        <input name="project-name" type="text" class="form-control" placeholder="项目名称">
+                    </div>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="customer-name" class="control-label col-sm-4">所属客户：</label>
+                    <div class="col-sm-8">
+                        <select name="customer-name" class="form-control">
+                            {% for customer in customers %}
+                            <option value="{{ customer.id }}">{{ customer.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="product" class="control-label col-sm-4">产品：</label>
+                    <div class="col-sm-8">
+                        <div class="checkbox">
+                            {% for product in products %}
+                                <label><input name="product" value="{{ product.id }}" type="checkbox">{{ product.name }}</label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-sm-12" id="notes-project">
+                    <label class="control-label col-sm-2">备注：</label>
+                    <div class="col-sm-10">
+                        <textarea name="notes" class="form-control" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div>
+            <p><strong>联系人信息</strong></p>
+            <hr>
+        </div>
+        <div align="left">
+            <button type="button" class="btn btn-success" onclick="show_contact_add_modal()">添加联系人</button>
+        </div>
+        <br>
+        <table id="table-contact" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>编号</th>
+                    <th>姓名</th>
+                    <th>职位</th>
+                    <th>办公电话</th>
+                    <th>手机</th>
+                    <th>电子邮箱</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div align="center">
+            <hr>
+            <button type="button" class="btn btn-success" onclick="ajax_project_add()">提交</button>
+            <button type="button" class="btn btn-danger" onclick="backpage()">返回</button>
+        </div>
+    </div>
+{% endblock %}
+{% block modal %}
+    <div class="modal fade" id="contact-add-modal" tabindex="-1" role="dialog" aria-labelledby="contact-add-modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><strong>联系人信息</strong></h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="contact-name" class="control-label">姓名：</label>
+                            <input name="contact-name" type="text" class="form-control" placeholder="必填">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-pos" class="control-label">职位：</label>
+                            <input id="contact-pos" name="contact-pos" type="text" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-tel" class="control-label">办公电话：</label>
+                            <input id="contact-tel" name="contact-tel" type="text" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-mobile" class="control-label">手机：</label>
+                            <input name="contact-mobile" type="text" class="form-control" placeholder="必填">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-mail" class="control-label">电子邮箱：</label>
+                            <input name="contact-mail" type="email" class="form-control" placeholder="必填">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" onclick="contact_add()">添加</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

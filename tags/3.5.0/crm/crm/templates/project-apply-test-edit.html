@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}申请测试{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="form-box">
+
+        <div class="panel panel-info panel-table">
+            <div class="panel-heading">
+                <h3 class="panel-title">申请测试</h3>
+            </div>
+            <div class="panel-body">
+            <p><strong>项目名称:</strong>{{ project.name }}</p>
+            <p><strong>客户名称:</strong>{{ project.customer.name }}</p>
+                <form action="" method="post">{% csrf_token %}
+                    {% if project.tested %}
+                    <div class="form-group">
+                        <label for="dts-account" class="control-label">DTS账号：</label>
+                        <input id="dts-account" type="text" class="form-control" value="{{ dts_account }}" placeholder="公司名字首字母">
+                    </div>
+                    {% else %}
+                    <div class="form-group">
+                        <label for="dts-account" class="control-label">DTS账号：</label>
+                        <input id="dts-account" type="text" class="form-control" value="{{ dts_account }}" placeholder="公司名字首字母">
+                    </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="analyser" class="control-label">百融分析师：</label>
+                        <select id="analyser" class="form-control">
+                            {% for usercredit in analysers %}
+                                {% if usercredit.id == analyser_select %}
+                                <option value="{{ usercredit.id }}" selected="selected">{{ usercredit.user.first_name }}</option>
+                                {% else %}
+                                <option value="{{ usercredit.id }}">{{ usercredit.user.first_name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount-data" class="control-label">测试数据量：</label>
+                        <input id="amount-data" type="tel" class="form-control" value="{{ amount_data }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="goal" class="control-label">本次测试目标：</label>
+                        <textarea id="goal" class="form-control" rows="2">{{ goal }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="fields" class="control-label">客户提供的测试字段：</label>
+                        <textarea id="fields" class="form-control" rows="2">{{ fields }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">测试结果要求：</label>
+                        <div class="checkbox">
+                            {% for t in test_result %}
+                                {% if t in test_result_selected %}
+                                    <label><input name="test-result" value="{{ t.id }}" type="checkbox" checked>{{ t.name }}</label>
+                                {% else %}
+                                    <label><input name="test-result" value="{{ t.id }}" type="checkbox">{{ t.name }}</label>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="checkbox">
+                        <label><input id="overdue-state" type="checkbox">是否提供逾期状态</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="notes" class="control-label">备注：</label>
+                        <textarea id="notes" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div align="center">
+                        <button type="button" class="btn btn-success" onclick="testApplyAdd()">提交</button>
+                        <button type="button" class="btn btn-danger" onclick="backpage()">返回</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

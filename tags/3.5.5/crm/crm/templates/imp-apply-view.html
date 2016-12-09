@@ -1,0 +1,542 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load bootstrap3 %}
+{% block title %}交付申请{% endblock %}
+{% block content %}
+<div class="container-fluid">
+        {% if history_imp_apply %}
+        <div class="panel panel-info panel-table">
+            <div class="panel-heading">
+                <h3 class="panel-title">历史申请记录</h3>
+            </div>
+            <div class="panel-body">
+            <table class="table table-bordered table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th>单号</th>
+                        <th>所属项目</th>
+                        <th>客户id</th>
+                        <th>所属客户</th>
+                        <th>产品</th>
+                        <th>风控经理</th>
+                        <th>申请人</th>
+                        <th>状态</th>
+                        <th>申请时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for imp_apply in history_imp_apply %}
+                    <tr>
+                        <th scope="row">{{ imp_apply.id }}</th>
+                        <td>{{ imp_apply.project.name }}</td>
+                        <td>{{ imp_apply.project.customer.id }}</td>
+                        <td>{{ imp_apply.project.customer.name }}</td>
+                        <td>{{ imp_apply.product.name }}</td>
+                        <td>{{ imp_apply.analyser.user.first_name }}</td>
+                        <td>{{ imp_apply.applicant.user.first_name }}</td>
+                        <td>{{ imp_apply.get_progress_display }}</td>
+                        <td>{{ imp_apply.create_time | date:"Y-m-d H:i" }}</td>
+                        <td>
+                            <a href="{{ imp_apply.get_absolute_url }}" target="_blank" class="btn btn-link btn-tb" role="button">查看</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+        {% endif %}
+    <div class="panel panel-info panel-table">
+        <div class="panel-heading">
+            <h3 class="panel-title">交付申请</h3>
+        </div>
+        <div class="panel-body">
+            <table class="table table-bordered table-hover">
+                <tbody>
+                    <tr>
+                        <th scope="row">单号</th>
+                        <td>{{ imp_apply.id }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">所属项目</th>
+                        <td>{{ imp_apply.project.name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">客户id</th>
+                        <td>{{ imp_apply.project.customer.id }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">所属客户</th>
+                        <td>{{ imp_apply.project.customer.name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">申请人</th>
+                        <td>{{ imp_apply.applicant.user.first_name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">交付产品</th>
+                        <td>{{ imp_apply.product.name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">风控经理</th>
+                        <td>{{ imp_apply.analyser.user.first_name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">运营经理</th>
+                        <td>{{ imp_apply.operations.user.first_name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">交付经理</th>
+                        <td>{{ imp_apply.imp_engineer.user.first_name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">当前进度</th>
+                        <td>{{ imp_apply.get_progress_display }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">进度描述</th>
+                        
+                        <td>
+                        {% if imp_apply.get_latest_progress.description != '无' and  imp_apply.get_latest_progress.description != '' %}
+                               {{ imp_apply.get_latest_progress.operator }} &nbsp
+                        {% endif %}
+                               {{ imp_apply.get_latest_progress.description }}
+                        
+                         </td>
+                 
+
+                    </tr>
+            
+                    <tr>
+
+                        <th scope="row">申请时间</th>
+                        <td>{{ imp_apply.create_time | date:"Y-m-d H:i" }}</td>
+                    </tr>
+                    {% if imp_apply.product.mark == "fx" %}
+                        {% with extra_fields=imp_apply.extra_fields %}
+                        <tr>
+                            <th scope="row">账号类型</th>
+                            <td>{% ifequal extra_fields.account_type "1" %}测试{% else %}正式{% endifequal %}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">建议对接开始日期</th>
+                            <td>{{ extra_fields.date_start }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">交付目的</th>
+                            <td>{{ extra_fields.target }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">补充说明</th>
+                            <td>{{ extra_fields.target_note }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">对接形式</th>
+                            <td>{% for m in extra_fields.mode %}{{ m }}；{% endfor %}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">转正后是否计入多次申请</th>
+                            <td>{% ifequal extra_fields.multi_apply "1" %}是{% else %}否{% endifequal %}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">分模块调用</th>
+                            <td>{% ifequal extra_fields.multi_module "1" %}是{% else %}否{% endifequal %}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">必填key值</th>
+                            <td>{{ extra_fields.required_key }}</td>
+                        </tr>
+                        {% if extra_fields.account_type == "1" %}
+                        <tr>
+                            <th scope="row">API(条/天)</th>
+                            <td>{{ extra_fields.pgbg_product.test.api_count }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">网页(总条数)</th>
+                            <td>{{ extra_fields.pgbg_product.test.web_count }}</td>
+                        </tr>
+                        {% if imp_apply.pic %}
+                        <tr>
+                            <th scope="row">邮件截图</th>
+                            <td><a href="{{ imp_apply.pic.url }}" target="_blank"><img src="{{ imp_apply.pic.avatar.url }}" alt="Responsive image" class="img-responsive img-thumbnail"></a></td>
+                        </tr>
+                        {% endif %}
+                        {% elif extra_fields.account_type == "2" %}
+                            {% with formal=extra_fields.pgbg_product.formal %}
+                            <tr>
+                                <th scope="row">免费期开始日期</th>
+                                <td id="free-date-start-td">{{ formal.free_date_start }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">免费期限</th>
+                                <td>{{ formal.free_period }}个月</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">免费查询限额</th>
+                                <td>{{ formal.free_limit }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">免费期其它说明</th>
+                                <td>{{ formal.free_time_note }}</td>
+                            </tr>
+                            {% endwith %}
+                            {% with cm=extra_fields.pgbg_product.charge_mode %}
+                            <tr>
+                                <th scope="row">合同开始日期</th>
+                                <td>{{ cm.contract_start_date }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">合同截至日期</th>
+                                <td>{{ cm.contract_end_date }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">基础服务费(元)</th>
+                                <td>{{ cm.basic_service_charge }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">付费模式</th>
+                                <td>{% if cm.mode == "1" %}方案一：子产品按量计费{% elif cm.mode == "2" %}方案二：按授信额比例计费{% elif cm.mode == "3" %}方案三：风险共担模式{% elif cm.mode == "4" %}方案四：包年计费{% endif %}</td>
+                            </tr>
+                            {% if cm.mode == "2" %}
+                            <tr>
+                                <th scope="row">每个命中客户的价格</th>
+                                <td>{{ cm.hit_price }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if cm.mode == "3" %}
+                            <tr>
+                                <th scope="row">风险共担的具体比例</th>
+                                <td>{{ cm.fxgd_note }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if cm.mode == "4" %}
+                            <tr>
+                                <th scope="row">包年价格</th>
+                                <td>{{ cm.year_price }}元/{{ cm.month_price }}月</td>
+                            </tr>
+                            {% endif %}
+                            {% endwith %}
+                        {% endif %}
+                        <tr>
+                            <th scope="row">交付的评估报告系列产品</th>
+                            <td>
+                                {% for p in extra_fields.pgbg_product.product_selected.values %}
+                                    <p>{{ p.name }}（{{ p.code }}）；{% if p.price %}单价（元）：{{ p.price }}{% endif %}</p>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">交付的海纳api产品</th>
+                            <td>
+                                {% for p in extra_fields.HNApi_selected.values %}
+                                <p>{{ p.name }}；{% if extra_fields.account_type == "1" %}测试条数：{% else %}单价（元）：{% endif %}{{ p.val }}；说明：{{ p.note }}</p>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">贷中名单API上传:</th>
+                            <td>{% if extra_fields.apiFileUpload_dz %}
+                                是
+                                {% else %}
+                                否
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">特殊名单API上传：</th>
+                            <td>{% if extra_fields.apiFileUpload_specialList %}
+                                是
+                                {% else %}
+                                否
+                                {% endif %}
+
+                            </td>
+                        </tr>
+                        {% with cus=extra_fields.cus_config %}
+                        <tr>
+                            <th scope="row">客制化评分</th>
+                            <td>{{ cus.cus_pf }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">客制化数据</th>
+                            <td>{{ cus.cus_data }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">借款反欺诈规则-黑名单</th>
+                            <td>{{ cus.rule_blk_sheet }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">借款反欺诈规则-多次申请:</th>
+                            <td>{{ cus.rule_multi_apply }}</td>
+                        </tr>
+                        {% endwith %}
+                        <tr>
+                            <th scope="row">雷达平台权限</th>
+                            <td>{{ extra_fields.radar_permission }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">附加字段值备注</th>
+                            <td>{{ extra_fields.notes }}</td>
+                        </tr>
+                        {% endwith %}
+                    {% elif imp_apply.product.mark == "cs" %}
+                        {% with extra_fields=imp_apply.extra_fields %}
+                        <tr>
+                            <th scope="row">测试周期</th>
+                            <td>{{ imp_apply.get_done_time_display }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">企业法人</th>
+                            <td>{{ extra_fields.legal_person }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">测试期催收坐席</th>
+                            <td>{{ extra_fields.cszx }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">公司官网</th>
+                            <td>{{ imp_apply.page_url }}</td>
+                        </tr>
+                        {% endwith %}
+                    {% else %}
+                        {% bootstrap_alert "出错啦！交付产品【Mark--代号】没有匹配到！联系管理员" alert_type='danger' %}
+                    {% endif %}
+                    {% with contact=imp_apply.contact %}
+                    <tr>
+                        <th scope="row">联系人</th>
+                        <td>{{ contact.name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">职位</th>
+                        <td>{{ contact.position }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">固话</th>
+                        <td>{{ contact.tel }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">手机</th>
+                        <td>{{ contact.mobile }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">邮箱</th>
+                        <td>{{ contact.email }}</td>
+                    </tr>
+                    {% endwith %}
+                    <tr>
+                        <th scope="row">交付申请备注</th>
+                        <td>{{ imp_apply.notes }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">更新记录</th>
+                        <td>
+                            {% for p in imp_apply.impapplyprogress_set.all %}
+                            <p>{{ p.create_time | date:"Y-m-d H:i" }}：{{ p.operator }}，{{ p.description }}，{{ p.get_progress_display }}</p>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div align="center">
+        {% with role=user.usercredit.role.role %}
+            {% if role == "商务" %}
+
+                    {% if imp_apply.progress == 10 or imp_apply.progress == 11 or imp_apply.progress == 12 or imp_apply.progress == 13 or imp_apply.progress == 44 and imp_apply.applicant == user.usercredit %}
+                    <a href="{{ imp_apply.get_edit_url }}" type="button" class="btn btn-info">编辑</a>
+                    <button type="button" class="btn btn-danger" onclick="showImpApplyDelModal({{ imp_apply.id }})">删除</button>
+                    {% else %}
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal_add_function" >更新
+                    </button>
+                    {% endif %}  
+            {% elif role == "风控经理" %}
+                {% if imp_apply.progress == 20 and imp_apply.analyser == user.usercredit %}
+                <button type="button" class="btn btn-success" onclick="showImpApplyProgressAddModal('{{ imp_apply.get_progress_add_url }}', 30)">通过</button>
+                <button type="button" class="btn btn-danger" onclick="showImpApplyProgressAddModal('{{ imp_apply.get_progress_add_url }}', 11)">退回</button>
+                {% endif %}
+            {% elif role == "运营经理" %}
+                {% if imp_apply.progress == 30 and user.usercredit == imp_apply.operations %}
+                <button type="button" class="btn btn-success" onclick="showImpApplyProgressAddModal('{{ imp_apply.get_progress_add_url }}', 40)">通过</button>
+                <button type="button" class="btn btn-danger" onclick="showImpApplyProgressAddModal('{{ imp_apply.get_progress_add_url }}', 12)">退回</button>
+                {% endif %}
+       
+
+            {% elif role == "交付经理" or role == "交付总监" %}
+                    
+                {% if imp_apply.progress == 46 or imp_apply.progress == 47 or imp_apply.progress == 48 or imp_apply.progress == 49  %}
+                        {% if imp_apply.progress != 49 %}
+                        
+                        <!-- <button type="button" class="btn btn-success" onclick="showImpApplyProgressAddModal('{{ imp_apply.get_progress_add_url }}', 44)">指向</button> -->
+                        {% endif %}
+                        {% if role == "交付总监" %}
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal_add_function" >
+                             更新
+                            </button>
+                        {%elif role == "交付经理"  %}
+                                {% if imp_apply.imp_engineer == user.usercredit %}
+
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal_add_function" >
+                                     更新
+                                    </button>
+                                {% endif %}
+                        {% endif %}
+
+                {% endif %}
+
+                {% if imp_apply.progress == 40 and imp_apply.imp_engineer == user.usercredit %}
+                <button type="button" class="btn btn-success" onclick="showImpApplyProgressAddModal('{{ imp_apply.get_progress_add_url }}', 45)">开始交付</button>
+                <button type="button" class="btn btn-danger" onclick="showImpApplyProgressAddModal('{{ imp_apply.get_progress_add_url }}', 13)">退回</button>
+		{% elif imp_apply.progress == 49 or imp_apply.progress == 46 or imp_apply.progress == 47 or imp_apply.progress == 48 and imp_apply.imp_engineer == user.usercredit %}
+                <button type="button" class="btn btn-success" onclick="showImpApplyProgressAddModal('{{ imp_apply.get_progress_add_url }}', 50)">交付完成</button>
+        
+                {% elif imp_apply.progress == 50 %}
+                    {% if imp_apply.imp_engineer == user.usercredit and imp_apply.product.mark == "fx" and imp_apply.extra_fields.account_type == "2" %}
+                    <button type="button" class="btn btn-info" onclick="$('#update-free-date-start-modal').modal('show');">设置免费期开始日期</button>
+                    {% endif %}
+                {% endif %}
+
+            {% endif %}
+        {% endwith %}
+        <a href="/crm/imp-apply/list/1/0/0/" type="button" class="btn btn-warning">返回</a>
+    </div>
+</div>
+{% endblock %}
+{% block modal %}
+<div class="modal fade" id="update-progress-modal" tabindex="-1" role="dialog" aria-labelledby="update-progress-model" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><strong>交付申请</strong></h4>
+            </div>
+            <div class="modal-body">
+            <form>
+            <div class="form-group">
+                <label for="description" class="control-label">描述</label>
+                <textarea id="description" name="description" class="form-control" rows="3" required ></textarea>
+               
+            </div>
+            </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="impApplyProgressAdd()">确定</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="update-free-date-start-modal" tabindex="-1" role="dialog" aria-labelledby="update-free-date-start-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><strong>设置免费期开始日期</strong></h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="free-date-start-model" class="control-label">免费期开始日期：</label>
+                        <div class="input-group date form_date" data-date-format="yyyy-mm-dd">
+                            <input id="free-date-start-model" class="form-control" size="12" type="text" value="{{ extra_fields.pgbg_product.formal.free_date_start }}" placeholder="必填" readonly required>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="impApplyFreeDateStartEdit({{ imp_apply.id }})">确定</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog" aria-labelledby="confirm-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><strong></strong></h4>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="impApplyDel(this)">确认</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="modal fade " id="myModal_add_function" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+
+  <div class="modal-dialog" role="document">
+    <div class="modal-content row">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">交付申请</h4>
+      </div>
+              <div class="modal-body  ">
+
+                      <form class="form-inline" role="form" action="{{ request.path }}" method="GET">
+                      {% csrf_token %}
+                        {% if user.usercredit.role.role == "交付经理" or user.usercredit.role.role == "交付总监" %}
+                            <div> 
+                                <span class="label label-success " style="font-size: 14px">更新内容:</span>
+                                <label class="checkbox-inline"> 
+                                    <input type="radio" name="deliver_status" id="optionsRadios3" value="46" {% if imp_apply.progress == 46 %} checked {% endif %} >开通账号
+                                </label> 
+                                <label class="checkbox-inline"> 
+                                    <input type="radio" name="deliver_status" id="optionsRadios3" value="47" {% if imp_apply.progress == 47 %} checked {% endif %} >完成解析
+                                </label> 
+                                      <label class="checkbox-inline"> 
+                                    <input type="radio" name="deliver_status" id="optionsRadios3" value="48" {% if imp_apply.progress == 48 %} checked {% endif %} >调通接口
+                                </label> 
+                                <label class="checkbox-inline"> 
+                                    <input type="radio" name="deliver_status" id="optionsRadios4" value="49"{% if imp_apply.progress == 49 %} checked {% endif %} >转正账号
+                                </label> 
+                                <p></p>
+                           </div> 
+                        {% endif %}
+                        <div> 
+                         <span  class="label label-success  " style="font-size: 14px">更新描述:</span>
+                        
+                           <textarea class="form-control modal_change_status" name="description" rows="2" cols="55" required=""></textarea> 
+                                      
+                        </div>
+              </div>
+      <div class="modal-footer" >
+            <div align="center">
+               
+               <button type="submit"  class="btn btn-default" ">提交</button> 
+               <button type="button"  class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+            
+     
+        
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<script type="text/javascript">
+    function showImpApplyDelModal(impApplyId){
+    var modal = $('#confirm-modal');
+    modal.modal('show');
+    modal.find(".modal-title strong").html("删除交付申请");
+    modal.find(".modal-body").html("<h5>确认要删除这个交付申请吗？</h5>");
+    modal.find(".modal-footer button[class='btn btn-success']").attr("value", impApplyId);
+}
+
+
+</script>
+{% endblock %}

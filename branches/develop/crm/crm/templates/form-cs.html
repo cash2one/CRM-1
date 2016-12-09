@@ -1,0 +1,99 @@
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="analyser" class="control-label">风控经理：</label>
+        <select id="analyser" name="analyser" class="form-control">
+        {% for usercredit in analysers %}
+            <option value="{{ usercredit.id }}" {% ifequal usercredit analyser_selected %}selected{% endifequal %}>{{ usercredit.user.first_name }}</option>
+        {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="imp-engineer" class="control-label">交付经理：</label>
+        <select id="imp-engineer" name="imp-engineer" class="form-control">
+        {% for usercredit in imp_engineers %}
+            <option value="{{ usercredit.id }}" {% ifequal usercredit imp_engineer_selected %}selected{% endifequal %}>{{ usercredit.user.first_name }}</option>
+        {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="control-label">是否已签署保密协议：</label>
+        <label class="radio-inline"><input type="radio" name="nda" id="nda" value="0" {% ifequal nda 0 %}checked{% endifequal %}>否</label>
+        <label class="radio-inline"><input type="radio" name="nda" id="nda" value="1" {% ifequal nda 1 %}checked{% endifequal %}>是</label>
+    </div>
+    <div class="form-group">
+        <label class="control-label">是否已签署正式合同：</label>
+        <label class="radio-inline"><input type="radio" name="contract" id="contract" value="0" {% ifequal contract 0 %}checked{% endifequal %}>否</label>
+        <label class="radio-inline"><input type="radio" name="contract" id="contract" value="1" {% ifequal contract 1 %}checked{% endifequal %}>是</label>
+    </div>
+    <div class="form-group">
+        <label class="control-label">是否部署百融代码：</label>
+        <label class="radio-inline"><input type="radio" name="br-code" id="br-code" value="0" {% ifequal br_code 0 %}checked{% endifequal %}>否</label>
+        <label class="radio-inline"><input type="radio" name="br-code" id="br-code" value="1" {% ifequal br_code 1 %}checked{% endifequal %}>是</label>
+    </div>
+    <div class="form-group">
+        <label class="control-label">账号类型：</label>
+        <label class="radio-inline"><input type="radio" name="account-type" id="account-type" value="1" onclick="setDoneTime(false)" {% ifequal account_type 1 %}checked{% endifequal %}>试用</label>
+        <label class="radio-inline"><input type="radio" name="account-type" id="account-type" value="2" onclick="setDoneTime(true)" {% ifequal account_type 2 %}checked{% endifequal %}>正式</label>
+    </div>
+    <div class="form-group">
+        <label for="id-done-time" class="control-label">测试周期</label>
+        <select class="form-control" id="id-done-time" name="done-time">
+        {% ifequal account_type 1 %}
+            <option value="0" {% ifequal done_time 0 %}selected{% endifequal %}>30天</option>
+            <option value="1" {% ifequal done_time 1 %}selected{% endifequal %}>60天</option>
+            <option value="2" {% ifequal done_time 2 %}selected{% endifequal %}>90天</option>
+            <option value="3" {% ifequal done_time 3 %}selected{% endifequal %}>180天</option>
+        {% else %}
+            <option value="4" selected>无限制（正式账号）</option>
+        {% endifequal %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="id-legal-person" class="control-label">企业法人</label>
+        <input id="id-legal-person" name="legal-person" type="text" class="form-control" value="{{ legal_person }}">
+    </div>
+    <div class="form-group">
+        <label for="id-cszx" class="control-label">测试期催收坐席</label>
+        <input id="id-cszx" name="cszx" type="text" class="form-control" value="{{ cszx }}">
+    </div>
+    <div class="form-group">
+        <label for="id-page-url" class="control-label">公司官网</label>
+        <input id="id-page-url" name="page-url" type="text" class="form-control" value="{{ page_url }}">
+    </div>
+    <div class="form-group">
+        <label for="contact" class="control-label">联系人</label>
+        <div class="input-group">
+            <select id="contact" name="contact" class="form-control">
+                {% for contact in contacts %}
+                    <option value="{{ contact.id }}" {% ifequal contact contact_selected %}selected{% endifequal %}>{{ contact.name }}</option>
+                {% endfor %}
+            </select>
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-info" onclick="show_contact_add_modal()">新建</button>
+            </span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="notes" class="control-label">备注：</label>
+        <textarea id="notes" name="notes" class="form-control" rows="3">{{ notes }}</textarea>
+    </div>
+    <div align="center">
+        <button type="submit" class="btn btn-success">提交</button>
+        <button type="button" class="btn btn-danger" onclick="backtopage()">返回</button>
+    </div>
+</form>
+<script>
+function setDoneTime(type){
+    var doneTime = $("#id-done-time");
+    doneTime.empty();
+    if(type){
+        doneTime.append('<option value="4" selected>无限制（正式账号）</option>');
+    }else{
+        doneTime.append('<option value="0" selected>30天</option>');
+        doneTime.append('<option value="1">60天</option>');
+        doneTime.append('<option value="2">90天</option>');
+        doneTime.append('<option value="3">180天</option>');
+    }
+}
+</script>

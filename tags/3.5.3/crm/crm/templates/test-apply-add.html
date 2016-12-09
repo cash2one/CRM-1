@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}申请测试{% endblock %}
+{% block content %}
+<div class="container-fluid">
+        <div class="panel panel-info panel-table" style="max-width: 680px;margin: 10px auto;">
+            <div class="panel-heading">
+                <h3 class="panel-title">申请测试</h3>
+            </div>
+            <div class="panel-body">
+            <p><strong>项目名称:</strong>{{ project.name }}</p>
+            <p><strong>客户名称:</strong>{{ project.customer.name }}</p>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="analyser" class="control-label">百融风控经理：</label>
+                        <select id="analyser" class="form-control">
+                            {% for usercredit in analysers %}
+                                <option value="{{ usercredit.id }}" {% ifequal usercredit.id analyser_select %}selected="selected"{% endifequal %}>{{ usercredit.user.first_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount-data" class="control-label">测试数据量：</label>
+                        <input id="amount-data" type="number" min="0" class="form-control" placeholder="必填" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="goal" class="control-label">本次测试目标：</label>
+                        <textarea id="goal" class="form-control" rows="3" placeholder="必填" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="fields" class="control-label">客户提供的测试字段：</label>
+                        <textarea id="fields" class="form-control" rows="3" placeholder="必填" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">测试结果要求(必选)：</label>
+                        <div class="checkbox">
+                            {% for t in test_result %}
+                                <label><input name="test-result" value="{{ t.id }}" type="checkbox">{{ t.name }}</label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">是否提供逾期状态：</label>
+                        <div class="checkbox">
+                            <label><input name="overdue-state" type="checkbox">是/否</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact" class="control-label">联系人</label>
+                        <div class="input-group">
+                            <select id="contact" class="form-control">
+                                {% for contact in project.contacts.all %}
+                                    <option value="{{ contact.id }}">{{ contact.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-info" onclick="show_contact_add_modal()">新建</button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="notes" class="control-label">备注：</label>
+                        <textarea id="notes" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div align="center">
+                        <button type="button" class="btn btn-success" onclick="testApplyAdd({{ project.id }})">提交</button>
+                        <button type="button" class="btn btn-danger" onclick="backpage()">返回</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block modal %}
+<div class="modal fade" id="contact-add-modal" tabindex="-1" role="dialog" aria-labelledby="contact-add-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><strong>联系人信息</strong></h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="contact-name" class="control-label">姓名：</label>
+                        <input name="contact-name" type="text" class="form-control" placeholder="必填">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-pos" class="control-label">职位：</label>
+                        <input name="contact-pos" type="text" class="form-control" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-tel" class="control-label">办公电话：</label>
+                        <input name="contact-tel" type="text" class="form-control" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-mobile" class="control-label">手机：</label>
+                        <input name="contact-mobile" type="text" class="form-control" placeholder="必填">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-mail" class="control-label">电子邮箱：</label>
+                        <input name="contact-mail" type="email" class="form-control" placeholder="必填">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="ajaxContactCreate({{ project.id }})">添加</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

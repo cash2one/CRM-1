@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block title %}按客户统计{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <ul class="nav nav-tabs">
+        <li role="presentation"><a href="{% url 'data-businessman' %}">按人员统计</a></li>
+        <li role="presentation" class="active"><a href="{% url 'data-customer' %}">按客户统计</a></li>
+    </ul>
+    <div style="margin-top: 10px; margin-bottom: 10px">
+        <form method="post" class="form-inline">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="customer-name" class="control-label">客户名称：</label>
+                <input name="customer-name" value="{{ customer_name }}" type="text" class="form-control" placeholder="客户名称">
+            </div>
+            <div class="form-group">
+                <label for="customer-type" class="control-label">&nbsp;&nbsp;客户类型：</label>
+                <select id="customer-type" name="customer-type" class="form-control">
+                    <option value="0" {% ifequal type_select 0 %}selected{% endifequal %}>全部</option>
+                    {% for type in customer_type %}
+                        <option value="{{ type.id }}" {% ifequal type_select type.id %}selected{% endifequal %}>{{ type }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="date-start" class="control-label">&nbsp;&nbsp;更新时间：</label>
+                <div class="input-group date form_date" data-date-format="yyyy-mm-dd">
+                    <input  name="start-time" class="form-control" size="16" type="text" value="{{ start_time }}" placeholder="起始时间" readonly>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="date-end" class="control-label">至</label>
+                <div class="input-group date form_date" data-date-format="yyyy-mm-dd">
+                    <input name="end-time" class="form-control" size="16" type="text" value="{{ end_time }}" placeholder="结束时间" readonly>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success form-group">查询</button>
+        </form>
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>编号</th>
+                <th>客户名称</th>
+                <th>所在区域</th>
+                <th>客户类型</th>
+                <th>项目数量</th>
+                <th>项目名称</th>
+                <th>跟进商务</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for customer in page.object_list %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ customer.name }}</td>
+                <td>{{ customer.zone.name }}</td>
+                <td>{{ customer.type.name }}</td>
+                <td>{{ customer.project_set.count }}</td>
+                <td>{{ customer.get_projects_name }}</td>
+                <td>{{ customer.get_businessmans_name }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div align="center">
+        {% bootstrap_pagination page url=request.path extra=export_url_param size="small" %}
+    </div>
+    <div align="center">
+        <a href="{% url 'export-data-customer' %}?{{ export_url_param }}" role="button" class="btn btn-success">&nbsp;&nbsp;导出&nbsp;&nbsp;</a>
+    </div>
+</div><!-- /container-fluid -->
+{% endblock %}

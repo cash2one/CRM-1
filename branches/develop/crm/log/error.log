@@ -1,0 +1,568 @@
+ERROR 2016-11-05 15:41:50,233 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/customers.py", line 182, in delete
+    customer = Customer.objects.get(id = int(customer_id))
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: Customer matching query does not exist.
+
+ERROR 2016-11-05 15:52:18,949 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/customers.py", line 182, in delete
+    customer = Customer.objects.get(id = int(customer_id))
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: Customer matching query does not exist.
+
+ERROR 2016-11-05 15:57:32,840 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/customers.py", line 180, in delete
+    customer = Customer.objects.get(id = int(customer_id))
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: Customer matching query does not exist.
+
+ERROR 2016-11-05 15:58:09,171 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/customers.py", line 180, in delete
+    customer = Customer.objects.get(id = int(customer_id))
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: Customer matching query does not exist.
+
+ERROR 2016-11-05 15:59:42,376 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/customers.py", line 180, in delete
+    customer = Customer.objects.get(id = int(customer_id))
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: Customer matching query does not exist.
+
+ERROR 2016-11-05 16:00:38,339 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/customers.py", line 180, in delete
+    customer = Customer.objects.get(id = int(customer_id))
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: Customer matching query does not exist.
+
+ERROR 2016-11-06 10:29:43,832 Traceback (most recent call last):
+  File "./api/customers.py", line 155, in put
+    check_auth_token = self.check_auth_token(request,key = key )
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: Customer matching query does not exist.
+
+ERROR 2016-11-06 10:29:53,862 Traceback (most recent call last):
+  File "./api/customers.py", line 155, in put
+    check_auth_token = self.check_auth_token(request,key = key )
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: Customer matching query does not exist.
+
+ERROR 2016-11-06 10:30:46,120 Traceback (most recent call last):
+  File "./api/customers.py", line 155, in put
+    check_auth_token = self.check_auth_token(request,key = key )
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: Customer matching query does not exist.
+
+ERROR 2016-11-06 12:01:06,447 Traceback (most recent call last):
+  File "./api/customers.py", line 74, in filter_customers
+    usercredit = UserCredit.objects.filter(user = token)
+NameError: global name 'UserCredit' is not defined
+
+ERROR 2016-11-06 12:02:12,354 Traceback (most recent call last):
+  File "./api/customers.py", line 74, in filter_customers
+    usercredit = UserCredit.objects.filter(user = token)
+NameError: global name 'UserCredit' is not defined
+
+ERROR 2016-11-06 12:03:44,231 Traceback (most recent call last):
+  File "./api/customers.py", line 74, in filter_customers
+    usercredit = UserCredit.objects.filter(user = token)
+NameError: global name 'UserCredit' is not defined
+
+ERROR 2016-11-06 12:05:10,742 Traceback (most recent call last):
+  File "./api/customers.py", line 74, in filter_customers
+    usercredit = UserCredit.objects.filter(user = token.user)
+NameError: global name 'UserCredit' is not defined
+
+ERROR 2016-11-06 12:06:14,652 Traceback (most recent call last):
+  File "./api/customers.py", line 74, in filter_customers
+    token =Token.objects.filter(pk = parameter["token"]).first()
+NameError: global name 'UserCredit' is not defined
+
+ERROR 2016-11-06 12:07:26,052 Traceback (most recent call last):
+  File "./api/customers.py", line 74, in filter_customers
+    token =Token.objects.filter(pk = parameter["token"]).first()
+NameError: global name 'UserCredit' is not defined
+
+ERROR 2016-11-06 15:41:18,828 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 78, in filter_projects
+    usercredit = UserCredit.objects.filter(user = token.user).first()
+NameError: global name 'UserCredit' is not defined
+
+ERROR 2016-11-06 15:43:25,441 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 78, in filter_projects
+    usercredit = UserCredit.objects.filter(user = token.user).first()
+NameError: global name 'UserCredit' is not defined
+
+ERROR 2016-11-07 12:19:13,710 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/serializers.py", line 129, in create
+    project.businessman.add(*usercredit)
+TypeError: add() argument after * must be a sequence, not UserCredit
+
+ERROR 2016-11-07 12:23:28,751 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/serializers.py", line 129, in create
+    project.businessman.add(*usercredit)
+TypeError: add() argument after * must be a sequence, not UserCredit
+
+ERROR 2016-11-07 12:25:51,455 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 147, in post
+    api_data = request.data
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 379, in __getattribute__
+    return super(Request, self).__getattribute__(attr)
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 186, in data
+    self._load_data_and_files()
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 246, in _load_data_and_files
+    self._data, self._files = self._parse()
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 315, in _parse
+    parsed = parser.parse(stream, media_type, self.parser_context)
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/parsers.py", line 67, in parse
+    raise ParseError('JSON parse error - %s' % six.text_type(exc))
+ParseError: JSON parse error - No JSON object could be decoded
+
+ERROR 2016-11-07 12:26:18,366 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 147, in post
+    api_data = request.data
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 379, in __getattribute__
+    return super(Request, self).__getattribute__(attr)
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 186, in data
+    self._load_data_and_files()
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 246, in _load_data_and_files
+    self._data, self._files = self._parse()
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 315, in _parse
+    parsed = parser.parse(stream, media_type, self.parser_context)
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/parsers.py", line 67, in parse
+    raise ParseError('JSON parse error - %s' % six.text_type(exc))
+ParseError: JSON parse error - No JSON object could be decoded
+
+ERROR 2016-11-07 13:33:43,107 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 183, in put
+    project = Project.objects.get(id = int(project_id),is_delete=False)
+ValueError: invalid literal for int() with base 10: ''
+
+ERROR 2016-11-07 13:34:00,337 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 183, in put
+    project = Project.objects.get(id = int(project_id),is_delete=False)
+ValueError: invalid literal for int() with base 10: ''
+
+ERROR 2016-11-07 14:59:13,960 Traceback (most recent call last):
+  File "./api/views.py", line 42, in post
+    usercredit = UserCredit.objects.get(user__username = username)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: UserCredit matching query does not exist.
+
+ERROR 2016-11-07 15:01:12,109 Traceback (most recent call last):
+  File "./api/views.py", line 42, in post
+    usercredit = UserCredit.objects.get(user__username = username)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: UserCredit matching query does not exist.
+
+ERROR 2016-11-07 15:02:35,293 Traceback (most recent call last):
+  File "./api/views.py", line 42, in post
+    usercredit = UserCredit.objects.get(user__username = username)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: UserCredit matching query does not exist.
+
+ERROR 2016-11-07 17:42:43,670 Traceback (most recent call last):
+  File "./api/customers.py", line 113, in post
+    try:
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 379, in __getattribute__
+    return super(Request, self).__getattribute__(attr)
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 186, in data
+    self._load_data_and_files()
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 246, in _load_data_and_files
+    self._data, self._files = self._parse()
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 315, in _parse
+    parsed = parser.parse(stream, media_type, self.parser_context)
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/parsers.py", line 67, in parse
+    raise ParseError('JSON parse error - %s' % six.text_type(exc))
+ParseError: JSON parse error - Expecting ':' delimiter: line 4 column 16 (char 120)
+
+ERROR 2016-11-07 17:43:04,334 Traceback (most recent call last):
+  File "./api/customers.py", line 113, in post
+    try:
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 379, in __getattribute__
+    return super(Request, self).__getattribute__(attr)
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 186, in data
+    self._load_data_and_files()
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 246, in _load_data_and_files
+    self._data, self._files = self._parse()
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 315, in _parse
+    parsed = parser.parse(stream, media_type, self.parser_context)
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/parsers.py", line 67, in parse
+    raise ParseError('JSON parse error - %s' % six.text_type(exc))
+ParseError: JSON parse error - Expecting ':' delimiter: line 4 column 16 (char 120)
+
+ERROR 2016-11-07 17:59:22,800 Traceback (most recent call last):
+  File "./api/customers.py", line 115, in post
+    api_data = request.data
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 379, in __getattribute__
+    return super(Request, self).__getattribute__(attr)
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 186, in data
+    self._load_data_and_files()
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 246, in _load_data_and_files
+    self._data, self._files = self._parse()
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 315, in _parse
+    parsed = parser.parse(stream, media_type, self.parser_context)
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/parsers.py", line 67, in parse
+    raise ParseError('JSON parse error - %s' % six.text_type(exc))
+ParseError: JSON parse error - No JSON object could be decoded
+
+ERROR 2016-11-07 18:00:35,516 Traceback (most recent call last):
+  File "./api/customers.py", line 115, in post
+    api_data = request.data
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 379, in __getattribute__
+    return super(Request, self).__getattribute__(attr)
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 186, in data
+    self._load_data_and_files()
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 246, in _load_data_and_files
+    self._data, self._files = self._parse()
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/request.py", line 315, in _parse
+    parsed = parser.parse(stream, media_type, self.parser_context)
+  File "/usr/local/lib/python2.7/dist-packages/rest_framework/parsers.py", line 67, in parse
+    raise ParseError('JSON parse error - %s' % six.text_type(exc))
+ParseError: JSON parse error - No JSON object could be decoded
+
+ERROR 2016-11-08 11:42:24,463 Traceback (most recent call last):
+  File "./api/serializers.py", line 115, in create
+    customer.zone.add(zone)
+AttributeError: 'Zone' object has no attribute 'add'
+
+ERROR 2016-11-17 18:02:53,321 Traceback (most recent call last):
+  File "./crm/apply_views.py", line 1043, in imp_apply_progress_add
+    igt_task.igt_task.delay(title,body)
+NameError: global name 'igt_task' is not defined
+
+ERROR 2016-11-17 18:04:54,674 Traceback (most recent call last):
+  File "./crm/apply_views.py", line 1043, in imp_apply_progress_add
+    igt_task.igt_task.delay(title,body.cid)
+NameError: global name 'igt_task' is not defined
+
+ERROR 2016-11-17 18:07:48,686 Traceback (most recent call last):
+  File "./crm/apply_views.py", line 1044, in imp_apply_progress_add
+    igt_task.igt_task.delay(title,body.cid)
+AttributeError: 'igt_task' object has no attribute 'igt_task'
+
+ERROR 2016-11-17 18:08:50,747 Traceback (most recent call last):
+  File "./crm/apply_views.py", line 1044, in imp_apply_progress_add
+    igt_task.delay(title,body.cid)
+AttributeError: 'unicode' object has no attribute 'cid'
+
+ERROR 2016-11-28 15:08:04,730 Traceback (most recent call last):
+  File "/home/mike/project/crm/export/views.py", line 316, in write_rows
+    description = imp_apply.get_latest_progress().description
+  File "/home/mike/project/crm/crm/models.py", line 556, in get_latest_progress
+    return self.impapplyprogress_set.latest('create_time')
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 484, in latest
+    return self._earliest_or_latest(field_name=field_name, direction="-")
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 478, in _earliest_or_latest
+    return obj.get()
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: ImpApplyProgress matching query does not exist.
+
+ERROR 2016-11-28 15:11:42,050 Traceback (most recent call last):
+  File "/home/mike/project/crm/export/views.py", line 316, in write_rows
+    description = imp_apply.get_latest_progress().description
+  File "/home/mike/project/crm/crm/models.py", line 556, in get_latest_progress
+    return self.impapplyprogress_set.latest('create_time')
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 484, in latest
+    return self._earliest_or_latest(field_name=field_name, direction="-")
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 478, in _earliest_or_latest
+    return obj.get()
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: ImpApplyProgress matching query does not exist.
+
+ERROR 2016-11-28 15:19:31,169 Traceback (most recent call last):
+  File "/home/mike/project/crm/export/views.py", line 316, in write_rows
+    description = imp_apply.get_latest_progress().description
+  File "/home/mike/project/crm/crm/models.py", line 556, in get_latest_progress
+    return self.impapplyprogress_set.latest('create_time')
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 484, in latest
+    return self._earliest_or_latest(field_name=field_name, direction="-")
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 478, in _earliest_or_latest
+    return obj.get()
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: ImpApplyProgress matching query does not exist.
+
+ERROR 2016-11-28 15:20:33,641 Traceback (most recent call last):
+  File "/home/mike/project/crm/export/views.py", line 316, in write_rows
+    description = imp_apply.get_latest_progress().description
+  File "/home/mike/project/crm/crm/models.py", line 556, in get_latest_progress
+    return self.impapplyprogress_set.latest('create_time')
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 484, in latest
+    return self._earliest_or_latest(field_name=field_name, direction="-")
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 478, in _earliest_or_latest
+    return obj.get()
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: ImpApplyProgress matching query does not exist.
+
+ERROR 2016-11-28 15:25:13,209 Traceback (most recent call last):
+  File "/home/mike/project/crm/export/views.py", line 316, in write_rows
+    description = imp_apply.get_latest_progress().description
+  File "/home/mike/project/crm/crm/models.py", line 556, in get_latest_progress
+    return self.impapplyprogress_set.latest('create_time')
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 484, in latest
+    return self._earliest_or_latest(field_name=field_name, direction="-")
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 478, in _earliest_or_latest
+    return obj.get()
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: ImpApplyProgress matching query does not exist.
+
+ERROR 2016-11-28 15:31:17,846 Traceback (most recent call last):
+  File "/home/mike/project/crm/export/views.py", line 316, in write_rows
+    description = imp_apply.get_latest_progress().description
+  File "/home/mike/project/crm/crm/models.py", line 556, in get_latest_progress
+    return self.impapplyprogress_set.latest('create_time')
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 484, in latest
+    return self._earliest_or_latest(field_name=field_name, direction="-")
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 478, in _earliest_or_latest
+    return obj.get()
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: ImpApplyProgress matching query does not exist.
+
+ERROR 2016-11-28 15:32:31,528 Traceback (most recent call last):
+  File "/home/mike/project/crm/export/views.py", line 316, in write_rows
+    description = imp_apply.get_latest_progress().description
+  File "/home/mike/project/crm/crm/models.py", line 556, in get_latest_progress
+    return self.impapplyprogress_set.latest('create_time')
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 484, in latest
+    return self._earliest_or_latest(field_name=field_name, direction="-")
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 478, in _earliest_or_latest
+    return obj.get()
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: ImpApplyProgress matching query does not exist.
+
+ERROR 2016-11-28 15:33:10,711 Traceback (most recent call last):
+  File "/home/mike/project/crm/export/views.py", line 316, in write_rows
+    description = imp_apply.get_latest_progress().description
+  File "/home/mike/project/crm/crm/models.py", line 556, in get_latest_progress
+    return self.impapplyprogress_set.latest('create_time')
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 484, in latest
+    return self._earliest_or_latest(field_name=field_name, direction="-")
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 478, in _earliest_or_latest
+    return obj.get()
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: ImpApplyProgress matching query does not exist.
+
+ERROR 2016-11-28 15:34:01,736 Traceback (most recent call last):
+  File "/home/mike/project/crm/export/views.py", line 316, in write_rows
+    description = imp_apply.get_latest_progress().description
+  File "/home/mike/project/crm/crm/models.py", line 556, in get_latest_progress
+    return self.impapplyprogress_set.latest('create_time')
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 484, in latest
+    return self._earliest_or_latest(field_name=field_name, direction="-")
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 478, in _earliest_or_latest
+    return obj.get()
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: ImpApplyProgress matching query does not exist.
+
+ERROR 2016-11-28 15:43:53,718 Traceback (most recent call last):
+  File "/home/mike/project/crm/export/views.py", line 316, in write_rows
+    description = imp_apply.get_latest_progress().description
+  File "/home/mike/project/crm/crm/models.py", line 556, in get_latest_progress
+    return self.impapplyprogress_set.latest('create_time')
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 484, in latest
+    return self._earliest_or_latest(field_name=field_name, direction="-")
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 478, in _earliest_or_latest
+    return obj.get()
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: ImpApplyProgress matching query does not exist.
+
+ERROR 2016-11-28 15:43:53,734 Traceback (most recent call last):
+  File "/home/mike/project/crm/export/views.py", line 316, in write_rows
+    description = imp_apply.get_latest_progress().description
+  File "/home/mike/project/crm/crm/models.py", line 556, in get_latest_progress
+    return self.impapplyprogress_set.latest('create_time')
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 484, in latest
+    return self._earliest_or_latest(field_name=field_name, direction="-")
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 478, in _earliest_or_latest
+    return obj.get()
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: ImpApplyProgress matching query does not exist.
+
+ERROR 2016-11-28 15:43:53,749 Traceback (most recent call last):
+  File "/home/mike/project/crm/export/views.py", line 316, in write_rows
+    description = imp_apply.get_latest_progress().description
+  File "/home/mike/project/crm/crm/models.py", line 556, in get_latest_progress
+    return self.impapplyprogress_set.latest('create_time')
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 484, in latest
+    return self._earliest_or_latest(field_name=field_name, direction="-")
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 478, in _earliest_or_latest
+    return obj.get()
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: ImpApplyProgress matching query does not exist.
+
+ERROR 2016-11-28 15:43:53,762 Traceback (most recent call last):
+  File "/home/mike/project/crm/export/views.py", line 316, in write_rows
+    description = imp_apply.get_latest_progress().description
+  File "/home/mike/project/crm/crm/models.py", line 556, in get_latest_progress
+    return self.impapplyprogress_set.latest('create_time')
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 484, in latest
+    return self._earliest_or_latest(field_name=field_name, direction="-")
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 478, in _earliest_or_latest
+    return obj.get()
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: ImpApplyProgress matching query does not exist.
+
+ERROR 2016-11-28 15:43:53,775 Traceback (most recent call last):
+  File "/home/mike/project/crm/export/views.py", line 316, in write_rows
+    description = imp_apply.get_latest_progress().description
+  File "/home/mike/project/crm/crm/models.py", line 556, in get_latest_progress
+    return self.impapplyprogress_set.latest('create_time')
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 484, in latest
+    return self._earliest_or_latest(field_name=field_name, direction="-")
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 478, in _earliest_or_latest
+    return obj.get()
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: ImpApplyProgress matching query does not exist.
+
+ERROR 2016-11-28 15:43:53,790 Traceback (most recent call last):
+  File "/home/mike/project/crm/export/views.py", line 316, in write_rows
+    description = imp_apply.get_latest_progress().description
+  File "/home/mike/project/crm/crm/models.py", line 556, in get_latest_progress
+    return self.impapplyprogress_set.latest('create_time')
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 484, in latest
+    return self._earliest_or_latest(field_name=field_name, direction="-")
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 478, in _earliest_or_latest
+    return obj.get()
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: ImpApplyProgress matching query does not exist.
+
+ERROR 2016-11-28 15:43:53,809 Traceback (most recent call last):
+  File "/home/mike/project/crm/export/views.py", line 316, in write_rows
+    description = imp_apply.get_latest_progress().description
+  File "/home/mike/project/crm/crm/models.py", line 556, in get_latest_progress
+    return self.impapplyprogress_set.latest('create_time')
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 484, in latest
+    return self._earliest_or_latest(field_name=field_name, direction="-")
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 478, in _earliest_or_latest
+    return obj.get()
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: ImpApplyProgress matching query does not exist.
+
+ERROR 2016-11-28 15:43:53,833 Traceback (most recent call last):
+  File "/home/mike/project/crm/export/views.py", line 316, in write_rows
+    description = imp_apply.get_latest_progress().description
+  File "/home/mike/project/crm/crm/models.py", line 556, in get_latest_progress
+    return self.impapplyprogress_set.latest('create_time')
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 484, in latest
+    return self._earliest_or_latest(field_name=field_name, direction="-")
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 478, in _earliest_or_latest
+    return obj.get()
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: ImpApplyProgress matching query does not exist.
+
+ERROR 2016-11-28 15:43:53,891 Traceback (most recent call last):
+  File "/home/mike/project/crm/export/views.py", line 316, in write_rows
+    description = imp_apply.get_latest_progress().description
+  File "/home/mike/project/crm/crm/models.py", line 556, in get_latest_progress
+    return self.impapplyprogress_set.latest('create_time')
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 484, in latest
+    return self._earliest_or_latest(field_name=field_name, direction="-")
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 478, in _earliest_or_latest
+    return obj.get()
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: ImpApplyProgress matching query does not exist.
+
+ERROR 2016-11-28 15:43:53,906 Traceback (most recent call last):
+  File "/home/mike/project/crm/export/views.py", line 316, in write_rows
+    description = imp_apply.get_latest_progress().description
+  File "/home/mike/project/crm/crm/models.py", line 556, in get_latest_progress
+    return self.impapplyprogress_set.latest('create_time')
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 484, in latest
+    return self._earliest_or_latest(field_name=field_name, direction="-")
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 478, in _earliest_or_latest
+    return obj.get()
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: ImpApplyProgress matching query does not exist.
+

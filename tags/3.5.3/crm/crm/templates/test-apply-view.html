@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+{% block title %}测试申请{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        {% if history_test_apply %}
+        <div class="panel panel-info panel-table">
+            <div class="panel-heading">
+                <h3 class="panel-title">相关项目测试申请历史记录</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>所属项目</th>
+                            <th>所属客户</th>
+                            <th>dts账号</th>
+                            <th>数据量</th>
+                            <th>测试目标</th>
+                            <th>客户提供的字段</th>
+                            <th>测试结果要求</th>
+                            <th>逾期状态</th>
+                            <th>进度</th>
+                            <th>描述</th>
+                            <th>联系人</th>
+                            <th>备注</th>
+                            <th>风控经理</th>
+                            <th>申请人</th>
+                            <th>申请时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for testapply in history_test_apply %}
+                            <tr>
+                                <td>{{ testapply.project.name }}</td>
+                                <td>{{ testapply.get_customer_name }}</td>
+                                <td>{{ testapply.dts_account }}</td>
+                                <td>{{ testapply.amount_data }}</td>
+                                <td>{{ testapply.goal }}</td>
+                                <td>{{ testapply.test_fields }}</td>
+                                <td>{{ testapply.get_test_result }}</td>
+                                <td>{{ testapply.get_overdue_state }}</td>
+                                <td>{{ testapply.get_progress_display }}</td>
+                                <td>{{ testapply.get_latest_progress.description }}</td>
+                                <td><button type="button" class="btn btn-link btn-tb" onclick="showContactViewModal({{ testapply.contact.id }})">{{ testapply.contact.name }}</button></td>
+                                <td>{{ testapply.notes }}</td>
+                                <td>{{ testapply.analyser.user.first_name }}</td>
+                                <td>{{ testapply.applyman.user.first_name }}</td>
+                                <td>{{ testapply.create_time | date:"Y-m-d H:i" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="panel panel-info panel-table">
+            <div class="panel-heading">
+                <h3 class="panel-title">测试申请</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered table-hover">
+                    <tbody>
+                        <tr>
+                            <th scope="row">所属项目</th>
+                            <td>{{ testapply.project.name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">所属客户</th>
+                            <td>{{ testapply.get_customer_name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">申请人</th>
+                            <td>{{ testapply.applyman.user.first_name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">申请时间</th>
+                            <td>{{ testapply.create_time | date:"Y-m-d H:i" }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">当前进度</th>
+                            <td>{{ testapply.get_progress_display }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">进度描述</th>
+                            <td>{{ testapply.get_latest_progress.description }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">更新记录</th>
+                            <td>
+                                {% for p in testapply.testapplyprogress_set.all %}
+                                <p>{{ p.timestamp | date:"Y-m-d H:i" }}：{{ p.operator }}，{{ p.description }}，{{ p.get_progress_display }}</p>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">dts账号</th>
+                            <td>{{ testapply.dts_account }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">风控经理</th>
+                            <td>{{ testapply.analyser.user.first_name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">测试数据量</th>
+                            <td>{{ testapply.amount_data }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">本次测试目标</th>
+                            <td>{{ testapply.goal }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">客户提供的测试字段</th>
+                            <td>{{ testapply.test_fields }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">测试结果要求</th>
+                            <td>{{ testapply.get_test_result }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">是否提供逾期状态</th>
+                            <td>{{ testapply.get_overdue_state }}</td>
+                        </tr>
+                        {% with contact=testapply.contact %}
+                        <tr>
+                            <th scope="row">联系人</th>
+                            <td>{{ contact.name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">职位</th>
+                            <td>{{ contact.position }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">固话</th>
+                            <td>{{ contact.tel }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">手机</th>
+                            <td>{{ contact.mobile }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">邮箱</th>
+                            <td>{{ contact.email }}</td>
+                        </tr>
+                        {% endwith %}
+                        <tr>
+                            <th scope="row">备注</th>
+                            <td>{{ testapply.notes }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div align="center">
+            <hr>
+            {% ifequal user.usercredit.role.role "风控经理" %}
+                {% if testapply.progress == 1 or testapply.progress == 2 %}
+                <button type="button" class="btn btn-danger" onclick="showTestApplyProgressAddModal('{{ testapply.get_progress_add_url }}', true)">退回</button>
+                <button type="button" class="btn btn-success" onclick="showTestApplyProgressAddModal('{{ testapply.get_progress_add_url }}', false, {{ testapply.progress }})">更新</button>
+                {% endif %}
+            {% endifequal %}
+            {% ifequal user.usercredit.role.role "商务" %}
+                {% ifequal testapply.progress 4 %}
+                    <a href="{{ testapply.get_edit_url }}" type="button" class="btn btn-info">编辑</a>
+                    <button type="button" class="btn btn-danger" onclick="showDeleteConfirmModal({{ testapply.id }})">删除</button>
+                {% endifequal %}
+            {% endifequal %}
+            <button type="button" class="btn btn-warning" onclick="backpage()">返回</button>
+        </div>
+    </div>
+{% endblock %}
+{% block modal %}
+<div class="modal fade" id="update-progress-modal" tabindex="-1" role="dialog" aria-labelledby="update-progress-model" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><strong>更新申请进度</strong></h4>
+            </div>
+            <div class="modal-body">
+            <form>
+                <div class="form-group" id="progress_dom">
+                    <label for="progress" class="control-label">最新进度：</label>
+                    <select id="progress" name="progress" class="form-control">
+                        {% for val, text in progress_choices %}
+                        <option value="{{ val }}" {% ifequal val 4 %}hidden{% endifequal %}>{{ text }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description" class="control-label">描述</label>
+                    <textarea id="description" name="description" class="form-control" rows="3"></textarea>
+                </div>
+            </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="testApplyProgressAdd()">保存</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="contact-info-modal" tabindex="-1" role="dialog" aria-labelledby="info-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><strong>联系人信息</strong></h4>
+            </div>
+            <div class="modal-body">
+                <table id="table_view" class="table table-bordered table-hover">
+                    <tbody>
+                        <tr class="default">
+                            <th scope="row">姓名:</th>
+                            <td></td>
+                        </tr>
+                        <tr class="default">
+                            <th scope="row">职位:</th>
+                            <td></td>
+                        </tr>
+                        <tr class="default">
+                            <th scope="row">电话:</th>
+                            <td></td>
+                        </tr>
+                        <tr class="default">
+                            <th scope="row">手机:</th>
+                            <td></td>
+                        </tr>
+                        <tr class="default">
+                            <th scope="row">邮箱:</th>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog" aria-labelledby="confirm-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><strong>删除申请</strong></h4>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="testApplyDel(this)">确认</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

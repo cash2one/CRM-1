@@ -1,0 +1,105 @@
+ERROR 2016-11-21 14:14:48,249 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,250 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,252 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,253 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,255 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,257 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,259 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,262 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,263 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,264 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,267 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,269 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,270 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,272 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,273 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,275 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,276 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,277 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,279 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,280 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+
+ERROR 2016-11-21 14:14:48,281 Traceback (most recent call last):
+  File "/home/mike/project/crm/api/projects.py", line 107, in add_latest_progress_to_project
+    progress = progress.filter(project__id = project_id)
+UnboundLocalError: local variable 'progress' referenced before assignment
+

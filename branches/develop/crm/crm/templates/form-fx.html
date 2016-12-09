@@ -1,0 +1,1362 @@
+{% load staticfiles %}
+{% load myfilter %}
+
+
+<form id="impForm" method="post"  enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="page-header" style="margin-top: 0">
+        <h4><span class="label label-default">客户信息：</span></h4>
+    </div>
+    <div class="row">
+        <p class="col-sm-4"><strong>项目名称：</strong>{{ project.name }}</p>
+        <p class="col-sm-4"><strong>客户全称：</strong>{{ project.customer.name }}</p>
+        <p class="col-sm-4"><strong>客户简称：</strong>{{ project.customer.short_name }}</p>
+    </div>
+    <div class="row">
+        <p class="col-sm-4"><strong>客户一级类目：</strong>{{ project.customer.category1 }}</p>
+        <p class="col-sm-4"><strong>客户二级类目：</strong>{{ project.customer.category2 }}</p>
+        <p class="col-sm-4"><strong>客户三级类目：</strong>{{ project.customer.category3 }}</p>
+    </div>
+    <div class="row">
+        <p class="col-sm-4"><strong>发起日期：</strong>{% now "Y-m-d" %}</p>
+        <p class="col-sm-4"><strong>所属商务：</strong>{{ user.first_name }}</p>
+    </div>
+    <div class="row">
+        <div class="form-group col-sm-4">
+            <label for="imp-date-start" class="control-label">建议对接开始日期：</label>
+            <div class="input-group date" id="advice-imp-date-start" data-date-format="yyyy-mm-dd">
+                <input id="imp-date-start" name="imp-date-start" class="form-control" size="12" type="text" value="{{ date_start }}" readonly>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-sm-3">
+            <label for="contact" class="control-label">联系人</label>
+            <div class="input-group">
+                <select id="contact" name="contact" class="form-control">
+                    <option value="0">--请选择--</option>
+                    {% for contact in contacts %}
+                        <option value="{{ contact.id }}" {% ifequal contact contact_selected %}selected{% endifequal %}>{{ contact.name }}</option>
+                    {% endfor %}
+                </select>
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-info" onclick="show_contact_add_modal()">新建</button>
+                </span>
+            </div>
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="analyser" class="control-label">风控经理：</label>
+            <select id="analyser" name="analyser" class="form-control">
+            <option value="0">--请选择--</option>
+            {% for usercredit in analysers %}
+                <option value="{{ usercredit.id }}" {% ifequal usercredit analyser_selected %}selected{% endifequal %}>{{ usercredit.user.first_name }}</option>
+            {% endfor %}
+            </select>
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="operations" class="control-label">运营经理：</label>
+            <select id="operations" name="operations" class="form-control">
+            <option value="0">--请选择--</option>
+            {% for usercredit in operations %}
+                <option value="{{ usercredit.id }}" {% ifequal usercredit operations_selected %}selected{% endifequal %}>{{ usercredit.user.first_name }}</option>
+            {% endfor %}
+            </select>
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="deliverys" class="control-label">交付经理：</label>
+            <select id="deliverys" name="deliverys" class="form-control">
+            <option value="0">--请选择--</option>
+            {% for usercredit in deliverys %}
+                <option value="{{ usercredit.id }}" {% ifequal usercredit deliverys_selected %}selected{% endifequal %}>{{ usercredit.user.first_name }}</option>
+            {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="page-header" style="margin-bottom: 0;">
+        <h4><span class="label label-default">此次交付申请简况：</span></h4>
+    </div>
+    <div class="row">
+        <div class="form-group col-sm-4">
+            <label for="imp-target" class="control-label">交付目的：</label>
+            <select id="imp-target" name="imp-target" class="form-control">
+                <option value="0" {% ifequal target "0" %}selected{% endifequal %}>--请选择--</option>
+                <option value="首次对接" {% ifequal target "首次对接" %}selected{% endifequal %}>首次对接</option>
+                <option value="账号转正" {% ifequal target "账号转正" %}selected{% endifequal %}>账号转正</option>
+                <option value="套餐变更" {% ifequal target "套餐变更" %}selected{% endifequal %}>套餐变更</option>
+                <option value="其他" {% ifequal target "其他" %}selected{% endifequal %}>其他</option>
+            </select>
+        </div>
+        <div class="form-group col-sm-8">
+            <label for="imp-target-note" class="control-label">补充说明 :</label>
+            <textarea id="imp-target-note" name="imp-target-note" class="form-control" rows="1">{{ target_note }}</textarea>
+
+         
+        
+        </div>
+
+ 
+
+    </div>
+
+    <div class="page-header" style="margin-bottom: 0;">
+        <h4><span class="label label-default">账号类型：</span></h4>
+    </div>
+    <div class="form-group">
+        <label class="radio-inline"><input type="radio" name="account-type" value="1" {% ifequal account_type "1" %}checked{% endifequal %}>测试</label>
+        <label class="radio-inline"><input type="radio" name="account-type" value="2" {% ifequal account_type "2" %}checked{% endifequal %}>正式</label>
+    </div>
+
+    <div class="page-header" style="margin-bottom: 0;">
+        <h4><span class="label label-default">对接要求：</span></h4>
+    </div>
+    <div class="row">
+        <div class="form-group col-sm-12">
+       
+            
+            <div  class="col-sm-12">
+                <label style="width:15%" class="control-label　label-danger"　>对接形式(单选)：</label>
+                <label class="radio-inline " style="width:10%" ><input class="imp-mode-api" type="radio" name="imp-mode" value="api" {% if "api" in mode %}checked{% endif %}>API</label>
+                <label class="radio-inline"><input class="imp-mode-web" type="radio"  name="imp-mode" value="web" {% if "web" in mode %}checked{% endif %}>网页</label>    
+            </div>
+            <div class="col-sm-12">
+                <label style="width:15%" class="control-label　">对接内容(必选可多选)：</label>
+                <label class="checkbox-inline" style="width:10%"><input type="checkbox" name="imp-mode" value="imp_dq" >贷前</label>
+                <label class=" checkbox-inline "><input type="checkbox" name="imp-mode" value="imp_dz">贷中</label>
+
+            </div　>
+
+            <!-- <div class="col-sm-12">
+                <label class="checkbox-inline col-sm-2 imp-mode-api "><input type="checkbox" name="imp-mode-" value="api_dq" >API贷前</label>
+                <label class=" checkbox-inline col-sm-2 imp-mode-api "><input type="checkbox" name="imp-mode" value="api_dz">API贷中</label>
+            </div　>
+            <div >    
+                <label class="checkbox-inline col-sm-2 imp-mode-web"><input type="checkbox" name="imp-mode-" value="web_dq">网页贷前</label>
+                <label class="checkbox-inline col-sm-2 imp-mode-web"><input type="checkbox" name="imp-mode-" value="web_dz">网页贷中</label>
+            </div> -->
+        
+
+        </div>
+        <div class="form-group col-sm-12">
+            <label style="width:15%" class="control-label">转正后是否计入多次申请：</label>
+            <label class="radio-inline" style="width:10%"><input type="radio" id="multi-apply1" name="multi-apply" value="0" {% ifequal multi_apply "0" %}checked{% endifequal %}>否</label>
+            <label class="radio-inline"><input type="radio" id="multi-apply2" name="multi-apply" value="1" {% ifequal multi_apply "1" %}checked{% endifequal %}>是</label>
+        </div>
+        <div class="form-group col-sm-12">
+            <label style="width:15%" class="control-label">分模块调用：</label>
+            <label class="radio-inline" style="width:10%"><input type="radio" id="multi-module1" name="multi-module" value="0" {% ifequal multi_module "0" %}checked{% endifequal %}>否</label>
+            <label class="radio-inline"><input type="radio" id="multi-module2" name="multi-module" value="1" {% ifequal multi_module "1" %}checked{% endifequal %}>是</label>
+            <div class="radio-inline text-danger" style="padding-left: 1px;">（是否先调用免费模块后调用付费模块）</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-sm-8">
+            <label for="required-key" class="control-label">必填key值：</label>
+            <textarea id="required-key" name="required-key" class="form-control" rows="1" required>{{ required_key }}</textarea>
+        </div>
+    </div>
+    <div class="page-header">
+        <h4><span class="label label-default">对接产品：</span></h4>
+        <p class="text-danger">请注意：部分产品在网页的对接下不可选； 手机实名认证不提供测试期使用</p>
+    </div>
+    <div class="row">
+        <h5 class="col-sm-4"><strong>一、评估报告系列子产品</strong></h5>
+    </div>
+
+    <div id="test-panel">
+        <fieldset {% ifequal account_type "2" %}disabled hidden{% endifequal %}>
+        <div class="row">
+            <p class="col-sm-4"><strong>测试期查询限制：</strong></p>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-4">
+                <label for="api-count" class="control-label">API(条/天)</label>
+                <input type="number" min="0" step="1" id="api-count" name="api-count" class="form-control" value="{{ pgbg_product.test.api_count }}" required>
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="web-count" class="control-label">网页(总条数)</label>
+                <input type="number" min="0" step="1" id="web-count" name="web-count" class="form-control" value="{{ pgbg_product.test.web_count }}" required>
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="email-pic" class="control-label">上传Frank邮件确认截图</label>
+                <input type="file" id="email-pic" name="email-pic">
+            </div>
+        </div>
+        </fieldset>
+        {% if imp_apply.pic %}
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <a href="{{ imp_apply.pic.url }}" target="_blank"><img id="email-pic-thumb" src="{{ imp_apply.pic.avatar.url }}" alt="Responsive image" class="img-responsive img-thumbnail"></a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div id="formal-panel">
+        <fieldset {% ifequal account_type "1" %}disabled hidden{% endifequal %}>
+        <div class="row">
+            <p class="col-sm-4"><strong>免费条款：</strong></p>
+        </div>
+        {% with formal=pgbg_product.formal %}
+        <div class="row">
+            <div class="form-group col-sm-4">
+                <label for="free-date-start" class="control-label">免费期开始日期：</label>
+                <div class="input-group date form_date" data-date-format="yyyy-mm-dd">
+                    <input name="free-date-start" class="form-control" size="12" type="text" value="{{ formal.free_date_start }}" placeholder="必填" readonly required>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div>
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="free-period" class="control-label">免费期限</label>
+                <select class="form-control" id="free-period" name="free-period">
+                    <option value="" {% ifequal formal.free_period "" %}selected{% endifequal %}>--请选择--</option>
+                    <option value="0" {% ifequal formal.free_period "0" %}selected{% endifequal %}>0个月</option>
+                    <option value="1" {% ifequal formal.free_period "1" %}selected{% endifequal %}>1个月</option>
+                    <option value="2" {% ifequal formal.free_period "2" %}selected{% endifequal %}>2个月</option>
+                    <option value="3" {% ifequal formal.free_period "3" %}selected{% endifequal %}>3个月</option>
+                    <option value="4" {% ifequal formal.free_period "4" %}selected{% endifequal %}>4个月</option>
+                    <option value="5" {% ifequal formal.free_period "5" %}selected{% endifequal %}>5个月</option>
+                    <option value="6" {% ifequal formal.free_period "6" %}selected{% endifequal %}>6个月</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-4">
+                <label for="free-limit" class="control-label">免费查询限额：</label>
+                <input id="free-limit" name="free-limit" type="number" min="0" class="form-control" value="{{ formal.free_limit }}" placeholder="必填" required>
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="free-time-note" class="control-label">免费期其它说明：</label>
+                <textarea id="free-time-note" name="free-time-note" class="form-control" rows="1">{{ formal.free_time_note }}</textarea>
+            </div>
+        </div>
+        {% endwith %}
+        <div class="row">
+            <p class="col-sm-4"  ><strong>计费模式：</strong></p>
+        </div>
+        {% with cm=pgbg_product.charge_mode %}
+        <div class="row">
+            <div class="form-group col-sm-4">
+                <label for="contract-date-start" class="control-label">合同开始日期：</label>
+                <div class="input-group date form_date" data-date-format="yyyy-mm-dd">
+                    <input name="contract-date-start" class="form-control" size="12" type="text" value="{{ cm.contract_start_date }}" placeholder="必填" readonly required>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div>
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="contract-date-end" class="control-label">合同截至日期：</label>
+                <div class="input-group date form_date" data-date-format="yyyy-mm-dd">
+                    <input name="contract-date-end" class="form-control" size="12" type="text" value="{{ cm.contract_end_date }}" placeholder="必填" readonly required>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-4">
+                <label for="basic-service-charge" class="control-label">基础服务费(元)</label>
+                <input id="basic-service-charge" name="basic-service-charge" type="number" min=0 class="form-control" value="{{ cm.basic_service_charge }}" placeholder="必填" required>
+                <p class="text-danger">网页版对接有基础服务费，API对接无基础服务费</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="radio">
+                    <label id='charge_models_for_dw'>
+                        <input type="radio" name="charge-mode" value="1" {% ifequal cm.mode "1" %}checked{% endifequal %}>方案一：子产品按量计费，选择后请在对接产品中填写购买产品的单价
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="charge-mode" value="2" {% ifequal cm.mode "2" %}checked{% endifequal %}>方案二：按授信额比例计费
+                    </label>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-4" style="margin-left: 20px">
+                        <label for="hit-price" class="control-label">请说明每个命中客户的价格：</label>
+                        <input id="hit-price" name="hit-price" type="number" min="0" step="0.1" value="{{ cm.hit_price }}" placeholder="必填" class="form-control" required {% ifnotequal cm.mode "2" %}disabled{% endifnotequal %}>
+                    </div>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="charge-mode" value="3" {% ifequal cm.mode "3" %}checked{% endifequal %}>方案三：风险共担模式，选择后请在对接产品中填写购买产品的单价与风险共担的具体比例
+                    </label>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-8" style="margin-left: 20px">
+                        <label for="fxgd-note" class="control-label">风险共担的模式说明：</label>
+                        <textarea id="fxgd-note" name="fxgd-note" class="form-control" rows="2" placeholder="必填" required {% ifnotequal cm.mode "3" %}disabled{% endifnotequal %}>{{ cm.fxgd_note }}</textarea>
+                    </div>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="charge-mode" value="4" {% ifequal cm.mode "4" %}checked{% endifequal %}>方案四：包年计费（元/月）
+                    </label>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-2" style="margin-left: 20px">
+                        <input id="year-price" name="year-price" type="number" min="0" step="1" value="{{ cm.year_price }}" placeholder="必填(单位：元)" class="form-control" required {% ifnotequal cm.mode "4" %}disabled{% endifnotequal %}/>
+                    </div><div class="form-group col-sm-2" style="margin-left: 20px">
+                        <input id="month-price" name="month-price" type="number" min="0" step="1" value="{{ cm.month_price }}" placeholder="必填(单位：月)"   class="form-control"  required {% ifnotequal cm.mode "4" %}disabled{% endifnotequal %}/>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% endwith %}
+        </fieldset>
+    </div>
+    <table class="table table-bordered" style="margin-top: 5px;">
+        <thead >
+            <tr>
+                <th>产品类别</th>
+                <th>产品名称</th>
+            </tr>
+        </thead>
+        <tbody id="pgbg">
+        {% with m_selected=pgbg_product.product_selected %}
+            {% for type, modules in data_modules.items %}
+                <tr>
+                    <th style="width: 10%;">
+                    {% if type == "ter" %}反欺诈/信用评估
+                    <p style="margin:30px 30px;"  >
+                    <button   type="button" name="ter_module_all" class="btn btn btn-info btn-xs" value="全选">全选</button>
+                    <button  type="button" name="score_module_reverse" class="btn btn btn-info btn-xs" value="全选">反选</button>
+                    </p>
+                    {% elif type == "score" %}评分
+                    <p style="margin:30px 30px;"  >
+                    <button   type="button" name="score_module_all" class="btn btn btn-info btn-xs" value="全选">全选</button>
+                    <button  type="button" name="score_module_reverse" class="btn btn btn-info btn-xs" value="全选">反选</button>
+                    <button   type="button" name="score_module_not" class="btn btn btn-info btn-xs" value="不选">不选</button>
+                    </p>
+                    
+                    
+                    {% elif type == "rule" %}规则
+                    <p style="margin:30px 30px;"  >
+                    <button   type="button" name="rule_module_all" class="btn btn btn-info btn-xs" value="全选">全选</button>
+                    <button  type="button" name="ruke_module_reverse" class="btn btn btn-info btn-xs" value="全选">反选</button>
+                    </p>
+                    {% else %}{{ type }}
+                    {% endif %}
+                    </th>
+                    <td>
+                    {% if type == 'score' %}
+                        {% for ms in modules %}
+                        <div class="row score_for_choice">
+                            {% for m in ms %}
+                            <div class="col-sm-6">
+                            <div class="row flag">
+                            <div class="checkbox col-sm-6" id="score">
+                                <label value = {{ m.name }}><input class="score_module" type="checkbox" value="{{ m.id }}" id="{{ m.code }}" name="pgbg-m" {% if m.id in m_selected %}checked{% endif %}>{{ m.name }}({{ m.code }})</label>
+                            </div>
+                            <div class="input-group col-sm-4 module-price score_price" {% if m.id not in m_selected or account_type == "1" %}style="display: none;"{% endif %} >
+                                <input   name="pgbg-{{ m.id }}-price" type="number" min="0" step="0.1" value="{{ m_selected|get_dict_price:m.id }}" class="form-control" {% if m.id not in m_selected or account_type == "1" %}disabled{% endif %} required >
+                                <div class="input-group-addon">单价(元)</div>
+                            </div>
+                            </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    {% elif type == 'ter' %}
+                        {% for ms in modules %}
+                        <div class="row ter_for_choice">
+                            {% for m in ms %}
+                            <div class="col-sm-6">
+                            <div class="row flag">
+                            <div class="checkbox col-sm-6">
+                                <label><input type="checkbox" value="{{ m.id }}" id="{{ m.code }}" name="pgbg-m" {% if m.id in m_selected %}checked{% endif %}>{{ m.name }}({{ m.code }})</label>
+                            </div>
+                            <div class="input-group col-sm-4 module-price" {% if m.id not in m_selected or account_type == "1" %}style="display: none;"{% endif %}>
+                                <input name="pgbg-{{ m.id }}-price" type="number" min="0" step="0.1" value="{{ m_selected|get_dict_price:m.id }}" class="form-control" {% if m.id not in m_selected or account_type == "1" %}disabled{% endif %} required>
+                                <div class="input-group-addon">单价(元)</div>
+                            </div>
+                            </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    {% else  %}
+                        {% for ms in modules %}
+                        <div class="row rule_for_choice">
+                            {% for m in ms %}
+                            <div class="col-sm-6">
+                            <div class="row flag">
+                            <div class="checkbox col-sm-6">
+                                <label><input type="checkbox" value="{{ m.id }}" id="{{ m.code }}" name="pgbg-m" {% if m.id in m_selected %}checked{% endif %}>{{ m.name }}({{ m.code }})</label>
+                            </div>
+                            <div class="input-group col-sm-4 module-price" {% if m.id not in m_selected or account_type == "1" %}style="display: none;"{% endif %}>
+                                <input name="pgbg-{{ m.id }}-price" type="number" min="0" step="0.1" value="{{ m_selected|get_dict_price:m.id }}" class="form-control" {% if m.id not in m_selected or account_type == "1" %}disabled{% endif %} required>
+                                <div class="input-group-addon">单价(元)</div>
+                            </div>
+                            </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+
+                    {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endwith %}
+        </tbody>
+    </table>
+
+    <div class="row">
+        <h5 class="col-sm-4"><strong>二、海纳API系列产品</strong></h5>
+    </div>
+    <div class="row">
+        <div class="col-sm-12" style="margin-top: 5px">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>产品类别</th>
+                    <th>产品名称</th>
+                    <th id="hnapi-val-title" style="width: 20%;">{% ifequal account_type "1" %}测试总条数{% else %}单价（元）{% endifequal %}</th>
+                    <th>其他说明</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for m in hnapi_modules %}
+            <tr>
+                <th>{{ m.category }}</th>
+                <td>
+                    <div class="checkbox">
+                        <label><input type="checkbox" value="{{ m.id }}" id="{{ m.code }}" name="hnapi-m" {% if m.id in HNApi_selected %}checked{% endif %}>{{ m.name }}</label>
+                    </div>
+                </td>
+                <td><input type="number" min="0" step="1" name="hnapi-{{ m.id }}-val" class="form-control hnapi-val" value="{{ HNApi_selected|get_dict_val:m.id }}" {% if m.id not in HNApi_selected %}disabled{% endif %} required></td>
+                <td><textarea name="hnapi-{{ m.id }}-note" class="form-control" rows="1" {% if m.id not in HNApi_selected %}disabled{% endif %}>{{ HNApi_selected|get_dict_note:m.id }}</textarea></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+
+    <div class="row">
+    <div><h5 class="col-sm-4"><strong>三、API文件上传</strong></h5></div>
+    </div>
+    <div class="checkbox form-group ">
+        <div class="col-sm-10">
+            <label class="checkbox-inline col-sm-2"><input id='apiFileUpload_dz' type="checkbox" name="apiFileUpload_dz" value="apiFileUpload_dz" >贷中名单上传</label>
+            <label class="checkbox-inline col-sm-2"><input id="apiFileUpload_specialList" type="checkbox" name="apiFileUpload_specialList" value="apiFileUpload_specialList">特殊名单上传
+            </label>
+        </div>
+
+    </div>
+   
+    <div class="row">
+ 　　 <div><h5 class="col-sm-4" ><strong>四、设备反欺诈7要素</strong></h5></div>
+    
+    <div class="checkbox form-group ">
+        <div class="col-sm-10">
+            <label class="checkbox-inline col-sm-12">部署平台：
+                <div style="margin-left:20px" class="checkbox" >
+                     <label class="col-sm-2"><input type="checkbox"  name="device-anti-fraud-platform-web" value="网页">网页</label>
+                     <label class="col-sm-2"><input type="checkbox" name="device-anti-fraud-platform-android" value="安卓APP">安卓APP</label>
+                     <label class="col-sm-2"><input type="checkbox" name="device-anti-fraud-platform-ios" value="IOSAPP">IOSAPP</label>
+                </div>
+            </label>
+            <label class="checkbox col-sm-12">网页域名：
+                <div style="margin-left:20px" class="checkbox" >
+                    <input type="text" class="form-control" name="device-anti-fraud-platform-web-domin" placeholder="网页域名">
+                </div>
+            </label>
+            <label class="checkbox col-sm-12">APP名称：
+                <div style="margin-left:20px" class="checkbox" >
+                    <input type="text" class="form-control" name="device-anti-fraud-platform-app-name" placeholder="APP名称">
+                </div>
+            </label>
+           <label class="checkbox-inline col-sm-12">部署事件：
+                <div style="margin-left:20px" class="checkbox" >
+                     <label class="col-sm-2"><input type="checkbox"  name="device-anti-fraud-event-borrow-money" value="借款">借款</label>
+                     <label class="col-sm-2"><input type="checkbox" name="device-anti-fraud-event-registration" value="注册">注册</label>
+                     <label class="col-sm-2"><input type="checkbox" name="device-anti-fraud-event-login" value="登陆">登陆</label>
+                </div>
+
+           </label>
+           <label class="radio-inline col-sm-12">部署测试环境：
+                <div style="margin-left:20px" class="radio">
+                    <label class="checkbox-inline col-sm-2"><input  type="radio" name="device-anti-fraud-test-env" value="1" >是</label>
+                
+                    <label class="checkbox-inline col-sm-2"><input  type="radio" name="device-anti-fraud-test-env" value="2">否
+                   </label>
+                </div>
+           </label>
+           <label  class=" col-sm-12">IOSAPP是否支持IDFA采集：
+                <div style="margin-left:20px" class="radio">
+                    <label class="checkbox-inline col-sm-2"><input  type="radio" name="device-anti-fraud-ios-idfa" value="1" >是</label>
+                    <label class="checkbox-inline col-sm-2"><input  type="radio" name="device-anti-fraud-ios-idfa" value="2">否
+                   </label>
+                </div>
+           </label>
+           <label  class=" col-sm-12">IOSAPP是否反馈经纬度：
+                <div style="margin-left:20px" class="radio">
+                    <label class="checkbox-inline col-sm-2"><input  type="radio" name="device-anti-fraud-ios-lng" value="1" >是</label>
+                    <label class="checkbox-inline col-sm-2"><input  type="radio" name="device-anti-fraud-ios-lng" value="2">否
+                   </label>
+                </div>
+           </label>
+           
+        </div>
+
+    </div>
+    </div>
+
+
+
+    <div class="page-header">
+        <h4><span class="label label-default">个性化配置：</span></h4>
+    </div>
+    <div class="row">
+        <div class="col-sm-8">
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th class="col-sm-3">客制化评分:</th>
+                    <td class="col-sm-9"><textarea name="cus-pf" class="form-control" rows="1" placeholder="如有个性化配置，请联系风控经理协助">{{ cus_config.cus_pf }}</textarea></td>
+                </tr>
+                <tr>
+                    <th>自定义数据:</th>
+                    <td><textarea name="cus-data" class="form-control" rows="1" placeholder="预置数据项的名称，如无请附上新数据项逻辑">{{ cus_config.cus_data }}</textarea></td>
+                </tr>
+                <tr>
+                    <th>借款反欺诈规则-黑名单:</th>
+                    <td><textarea name="rule-blk-sheet" class="form-control" rows="1" placeholder="说明修改要求，包括不启用的规则，修改默认权重或条件的规则">{{ cus_config.rule_blk_sheet }}</textarea></td>
+                </tr>
+                <tr>
+                    <th>借款反欺诈规则-多次申请:</th>
+                    <td><textarea name="rule-multi-apply" class="form-control" rows="1" placeholder="说明修改要求，包括不启用的规则，修改默认权重或条件的规则">{{ cus_config.rule_multi_apply }}</textarea></td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    <div class="page-header" style="margin-bottom: 0">
+        <h4><span class="label label-default">雷达平台权限：</span></h4>
+        <p class="text-danger">说明：写明可以在雷达平台能查询该用户使用情况的商务同事，（商务大区经理、大区风控经理和VP自动有权限，不用列出）</p>
+    </div>
+    <div class="form-group">
+        <label for="radar-permission" class="control-label"></label>
+        <textarea id="radar-permission" name="radar-permission" class="form-control" rows="3">{{ radar_permission }}</textarea>
+    </div>
+    <div class="page-header" style="margin-bottom: 0">
+        <h4><span class="label label-default">备注：</span></h4>
+    </div>
+    <div class="form-group">
+        <label for="notes" class="control-label"></label>
+        <textarea id="notes" name="notes" class="form-control" rows="3">{{ notes }}</textarea>
+    </div>
+    <input type="text" id="action" name="action" value="submit" hidden>
+    <div align="center">
+        <button type="button" value="save" id="save-btn" class="btn btn-success">保存</button>
+        <button type="button" value="submit" id="submit-btn" class="btn btn-info">提交</button>
+        <button type="button" class="btn btn-danger" onclick="backtopage()">返回</button>
+    </div>
+</form>
+<script src="{% static "/static/jquery/jquery-1.11.3.min.js" %}"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}datetimepicker/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script>
+$(document).ready(function(){
+    var testPanel = $('#test-panel').children('fieldset');
+    var formalPanel = $('#formal-panel').children('fieldset');
+    var modulePrice = $('.module-price');
+    var oScore = $('#score');
+    var impForm = $('#impForm');
+    var webModules = null;  // 网页版支持的模块
+    var noTestModules = null;  // 不支持测试的模块
+    var webModules_hna_api = null; //  网页版支持的HANAPI模块
+    var api_pgbd_dq = [];
+    var api_hn_dq = [];
+    var api_pgbd_dz = [];
+    var api_hn_dz = [];
+    var web_pgbd_dq = [];
+    var web_hn_dq = [];
+    var web_pgbd_dz = [];
+    var web_hn_dz = [];
+    var device_serven_element = [];
+    //alert('nameArr');
+    function makeObjStatus(nameArr, enabled) {
+        // 设置产品模块的禁用和可用状态
+        
+        for (var i=0; i<nameArr.length; i++) {
+            var obj = $('#'+nameArr[i]);
+            if (enabled) {
+                obj.removeAttr('disabled');
+                obj.parent().css('text-decoration', '');
+            } else {
+                obj.attr('disabled', 'disabled');
+                obj.parent().css('text-decoration', 'line-through');
+            }
+        }
+    }
+    //write mike start
+    //屏蔽　三.API文件上传是否可用 参数enable = true 可用
+    function judgeApiUpload(enabled){
+        if (enabled){
+            var apiFileUpload_dz = $('input[name=apiFileUpload_dz]');
+            var apiFileUpload_specialList = $('input[name=apiFileUpload_specialList]');
+            apiFileUpload_dz.attr('disabled',false);
+            apiFileUpload_dz.removeAttr('checked');
+            apiFileUpload_dz.parent().css('text-decoration', '');
+            apiFileUpload_specialList.attr('disabled',false);
+            apiFileUpload_specialList.removeAttr('checked');
+            apiFileUpload_specialList.parent().css('text-decoration', '');
+        }else{
+            var apiFileUpload_dz = $('input[name=apiFileUpload_dz]');
+            var apiFileUpload_specialList = $('input[name=apiFileUpload_specialList]');
+            apiFileUpload_dz.attr('disabled', 'disabled');
+            apiFileUpload_dz.removeAttr('checked');
+            apiFileUpload_dz.parent().css('text-decoration', 'line-through');
+            apiFileUpload_specialList.attr('disabled', 'disabled');
+            apiFileUpload_specialList.removeAttr('checked');
+            apiFileUpload_specialList.parent().css('text-decoration', 'line-through');
+        } 
+    }
+    function judgeMode(api,web){
+        //若有选择api 或者web其中一个则屏蔽另一个就是　api 和web 只能单选
+        $('.imp-mode-'+api+' input').each(function(){       
+            if($(this).is(":checked")){
+                $('.imp-mode-'+ web +' input').attr("disabled","disabled");
+                $('.imp-mode-'+ web +' input').parent().css('text-decoration', 'line-through');
+            }
+        });
+        //去除屏蔽内容
+        if(!$( '.imp-mode-'+api+' input[value='+api+'_dq]').is(":checked") && !$('.imp-mode-'+api+' input[value='+api+'_dz]').is(":checked") ){
+            $('.imp-mode-'+ web +' input').removeAttr("disabled");
+            $('.imp-mode-'+ web +' input').parent().css('text-decoration', ''); 
+            
+        };
+    }
+
+    //write mike end
+    $.getJSON('/crm/imp/page/config/', function(ret){
+        if (ret['msg'] == 0) {
+            webModules = ret['data']['web_modules'];
+            noTestModules = ret['data']['no_test'];
+            webModules_hna_api = ret['data']['webModules_hna_api']
+            if ($('input[name=account-type]:checked').val() === "1"){
+                // 如果账号类型是测试,那么初始化禁用不支持测试的模块
+                makeObjStatus(noTestModules, false)
+            }
+            var modes = getCheckedArray('imp-mode');
+            api_pgbd_dq = ret['data']['api_pgbd_dq'];
+            api_hn_dq = ret['data']['api_hn_dq'];
+            api_pgbd_dz = ret['data']['api_pgbd_dz'];
+            web_pgbd_dq = ret['data']['web_pgbd_dq'];
+            web_hn_dq = ret['data']['web_hn_dq'];
+            web_pgbd_dz = ret['data']['web_pgbd_dz'];
+            device_serven_element = ret['data']["device_serven_element"]
+            if (modes.length === 1 && modes[0] === 'web') {
+                //如果有历史申请记录并且对接形式仅仅为web屏蔽hanapi产品
+                $('input[name=hnapi-m]').each(function(){
+                    var self = $(this);
+                    if (webModules_hna_api.indexOf(self.attr('id')) === -1) {
+                        self.attr('disabled', 'disabled');
+                        self.parent().css('text-decoration', 'line-through');                    
+                    }
+
+                });
+                $('input[name=pgbg-m]').each(function(){
+                    var self = $(this);
+                    if (webModules.indexOf(self.attr('id')) === -1) {
+                        self.attr('disabled', 'disabled');
+                        self.parent().css('text-decoration', 'line-through');
+                    }
+                });
+            } 
+        } else {
+            alert(ret['msg']);
+        }
+    });
+    
+    //wriet by mike 
+    //根据选择对接形式屏蔽不属于该模式的产品
+    //IF hn_product 不存在就把hn_product =[] 就是屏蔽所有hn产品
+    function makeAllProductEnalbed(){
+        $('input[name=pgbg-m]').each(function(){
+                var self = $(this);
+                self.attr('disabled',false);
+                self.parent().css('text-decoration', '');
+                
+        });
+        $('input[name=hnapi-m]').each(function(){
+                var self = $(this);
+                self.attr('disabled', false);
+                self.parent().css('text-decoration', '');
+                
+        });
+    }
+    function disableProductByImpMod(pgbg_product,hn_product,enabled=true){
+        if(enabled){
+            $('input[name=pgbg-m]').each(function(){
+                var self = $(this);
+                if (pgbg_product.indexOf(self.attr('id')) === -1) {
+                    self.attr('disabled', 'disabled');
+                    self.attr("checked",false);
+                    self.parent().css('text-decoration', 'line-through');
+                }
+            });
+            $('input[name=hnapi-m]').each(function(){
+                var self = $(this);
+                if (hn_product.indexOf(self.attr('id')) === -1) {
+                    self.attr('disabled', 'disabled');
+                    self.attr("checked",false)
+                    self.parent().css('text-decoration', 'line-through');
+                }
+            });
+        }else{
+            $('input[name=pgbg-m]').each(function(){
+                var self = $(this);
+                if (pgbg_product.indexOf(self.attr('id')) === -1) {
+                    self.attr('disabled',false);
+                    self.parent().css('text-decoration', '');
+                }
+            });
+            $('input[name=hnapi-m]').each(function(){
+                var self = $(this);
+                if (hn_product.indexOf(self.attr('id')) === -1) {
+                    self.attr('disabled', false);
+                    self.parent().css('text-decoration', '');
+                }
+            });
+
+        }   
+    }
+
+    //添加评分模块的不选功能
+    $("button[name=score_module_not]").click(function(){
+        $('#score .score_module').each(function(){
+            self = $(this);
+            self.attr('checked',false);
+            //取消添加价钱的输入框
+            var oCheckbox = $(this);
+            var oDiv = oCheckbox.parents('div.flag');
+            oDiv.find('input[type=number]').prop('disabled', 'disabled');
+
+        });
+    })
+    function prudcut_choice_all(product_class,enabled){
+        if(enabled){
+           $('.'+product_class+' input[name=pgbg-m]').each(function(){
+            self = $(this);
+            self.attr('checked',true);
+            //取消添加价钱的输入框
+            var oCheckbox = $(this);
+            var oDiv = oCheckbox.parents('div.flag');
+            oDiv.find('input[type=number]').prop('disabled', false);
+           }) 
+        }else{
+            $('.ter_for_choice input[name=pgbg-m]').each(function(){
+                self = $(this);
+                self.attr('checked',false);
+                //取消添加价钱的输入框
+                var oCheckbox = $(this);
+                var oDiv = oCheckbox.parents('div.flag');
+                oDiv.find('input[type=number]').prop('disabled', "disabled");
+
+           }) 
+        }
+    }
+    $("button[name=ter_module_all]").click(function(){
+        prudcut_choice_all(,true);
+    })
+    $('.imp-mode-api').click(function(){
+        //judgeMode("api","web");
+        //点击api模式　三、API文件上传应该可用
+        judgeApiUpload(true);
+        //评分多选
+        $('.score_module').each(function(){
+                        self = $(this);
+                        self.attr('type','checkbox');
+        });
+        $('input[value=imp_dq]').attr('checked',false);
+        $('input[value=imp_dz]').attr('checked',false);
+        makeAllProductEnalbed();
+    });
+    $('.imp-mode-web').click(function(){
+        //judgeMode("web","api");
+        //点击web模式　三、API文件上传应该不可用
+        judgeApiUpload(false);
+        //评分单选
+        $('.score_module').each(function(){
+                        self = $(this);
+                        self.attr('type','radio');
+        });
+        $('input[value=imp_dq]').attr('checked',false);
+        $('input[value=imp_dz]').attr('checked',false);
+        makeAllProductEnalbed();
+    });
+    $('input[value=imp_dq]').click(function(){
+        //点击api贷前可选模块为abled
+        makeAllProductEnalbed();
+        if($(this).is(":checked") && $('.imp-mode-api').is(':checked')){
+            disableProductByImpMod(api_pgbd_dq,api_hn_dq,true);
+        }if($(this).is(":checked") && $('.imp-mode-web').is(':checked')){
+            disableProductByImpMod(web_pgbd_dq,web_hn_dq,true);
+        }if($('.imp-mode-api').is(':checked') && $('input[value=imp_dz]').is(':checked')){
+            disableProductByImpMod(api_pgbd_dz,[],true);
+        }if($('.imp-mode-web').is(':checked') && $('input[value=imp_dz]').is(':checked')){
+            disableProductByImpMod(web_pgbd_dz,[],true);
+        }if($(this).is(":checked") && $('.imp-mode-web').is(':checked') && $('input[value=imp_dz]').is(':checked')){
+            web_pgbg_dq_and_api_dz = web_pgbd_dq.concat(web_pgbd_dz);
+            disableProductByImpMod(web_pgbg_dq_and_api_dz,web_hn_dq,true);
+        }if($(this).is(":checked") && $('.imp-mode-api').is(':checked') && $('input[value=imp_dz]').is(':checked')){
+            api_pgbg_dq_and_api_dz = api_pgbd_dq.concat(api_pgbd_dz);
+            disableProductByImpMod(api_pgbg_dq_and_api_dz,api_hn_dq,true);
+        }
+    });
+    $('input[value=imp_dz]').click(function(){
+        //点击api贷中可选模块为abled
+        makeAllProductEnalbed();
+        if($(this).is(":checked") && $('.imp-mode-api').is(':checked')){
+            disableProductByImpMod(api_pgbd_dz,[],true);
+        }if($(this).is(":checked") && $('.imp-mode-web').is(':checked')){
+            disableProductByImpMod(web_pgbd_dz,[],true);
+        }if($('.imp-mode-api').is(':checked') && $('input[value=imp_dq]').is(':checked')){
+            disableProductByImpMod(api_pgbd_dq,api_hn_dq,true);
+        }if($('.imp-mode-web').is(':checked') && $('input[value=imp_dq]').is(':checked')){
+            disableProductByImpMod(web_pgbd_dq,web_hn_dq,true);
+        }if($(this).is(":checked") && $('.imp-mode-web').is(':checked') && $('input[value=imp_dq]').is(':checked')){
+            makeAllProductEnalbed();
+            web_pgbg_dq_and_web_dz = web_pgbd_dq.concat(web_pgbd_dz);
+            disableProductByImpMod(web_pgbg_dq_and_web_dz,[],true);
+        }if($(this).is(":checked") && $('.imp-mode-api').is(':checked') && $('input[value=imp_dq]').is(':checked')){
+            makeAllProductEnalbed();
+            api_pgbg_dq_and_api_dz = api_pgbd_dq.concat(api_pgbd_dz);
+            disableProductByImpMod(api_pgbg_dq_and_api_dz,api_hn_dq,true);
+        }
+        
+    });
+    //write by mike end
+    (function(){
+        // 初始化id=advice-imp-date-start(建议开始对接的日期)
+        function getDateStr(offset) {
+            var date = new Date();
+            date.setDate(date.getDate() + offset);
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            var d = date.getDate();
+            return y + "-" + m + "-" + d;
+        }
+        var initDate = getDateStr(4);
+        var oImpDateStart = $('#imp-date-start');
+        if (oImpDateStart.val() === "") {
+            oImpDateStart.val(initDate);
+        }
+        $('#advice-imp-date-start').datetimepicker({
+            language: 'zh-CN',
+            weekStart: 1,
+            todayBtn: 1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            minView: 2,
+            forceParse: 0,
+            startDate: initDate,
+            initialDate: initDate
+        });
+    })();
+
+    function makeModulePriceDisabled(disabled) {
+        if (disabled) {
+            $('input[name=score-price]').attr('disabled', 'disabled');
+            modulePrice.each(function(){
+                $(this).children('input').attr('disabled', 'disabled');
+            });
+        } else {
+       
+            modulePrice.each(function(){
+                // 如果该单价(modulePrice)控件对应的产品模块(pgbg-m)是checked状态并且没有被禁用,
+                // 那么移除该单价(modulePrice)控件的禁用状态
+                var oInput = $(this).parent().find('input[name=pgbg-m]');
+                if (oInput.is(':checked') && oInput.attr("disabled") !== "disabled") {
+                    $(this).children('input').removeAttr('disabled');
+                }
+            });
+        }
+    }
+
+    (function(){
+        // 根据账号类型初始化页面
+        var aType = $('input[name=account-type]:checked').val();
+        if (aType === '1') {
+            // 测试账号
+            testPanel.show();
+            testPanel.removeAttr('disabled');
+            formalPanel.hide();
+            formalPanel.attr('disabled', 'disabled');
+            modulePrice.hide();
+            $('input[name=score-price]').hide();
+            makeModulePriceDisabled(true);
+            $('#hnapi-val-title').text("测试条数");  // 设置海纳api模块的表格头(测试账号:测试条数,正式账号:单价(元))
+            $('input.hnapi-val').attr("step", '1');  // 变换hnapi模块input的step 测试账号:条数(没有小数),正式账号:单价(有小数)
+        } else if (aType === '2') {
+            // 正式账号
+            formalPanel.show();
+            formalPanel.removeAttr('disabled');
+            testPanel.hide();
+            testPanel.attr('disabled', 'disabled');
+            var chargeMode = $('input[name=charge-mode]:checked').val();
+            if ( chargeMode === "2" || chargeMode === "4") {
+                // 如果付费模式是方案二,那么隐藏并禁用module-price
+                modulePrice.hide();
+                makeModulePriceDisabled(true);
+                $('input[name=score-price]').attr('disabled', 'disabled');
+            } else if (chargeMode === "1" || chargeMode === "3") {
+                modulePrice.show();
+                $('input[name=score-price]').show();
+                makeModulePriceDisabled(false);
+            }
+            $('#hnapi-val-title').text("单价（元）");
+            $('input.hnapi-val').attr("step", '0.1');
+        }
+    })();
+
+    function makeDisabledUnselected() {
+        // 取消禁用模块的checked状态
+        $('input[name=pgbg-m]').each(function(){
+            var self = $(this);
+            if (self.prop('disabled') && self.is(':checked')) {
+                self.removeAttr('checked');
+                self.parents('div.flag').find('input[type=number]').attr('disabled', 'disabled');
+            }
+        });
+    }
+
+    $('input[name=account-type]').change(function(){
+        var accountType = $(this).val();
+        if (accountType === '1') {
+            // 测试账号
+            testPanel.show();
+            testPanel.removeAttr('disabled');
+            formalPanel.hide();
+            formalPanel.attr('disabled', 'disabled');
+            modulePrice.hide();
+            $('input[name=score-price]').hide();
+            makeModulePriceDisabled(true);
+           
+            makeObjStatus(noTestModules, false);  // 禁用不支持测试的模块
+            $('#hnapi-val-title').text("测试条数");
+            $('input.hnapi-val').attr("step", '1');
+        } else if (accountType === '2') {
+            // 正式账号
+            formalPanel.show();
+            formalPanel.removeAttr('disabled');
+            testPanel.hide();
+            testPanel.attr('disabled', 'disabled');
+            if ($('input[name=charge-mode]:checked').val() !== "2") {
+                modulePrice.show();
+                $('input[name=score-price]').show();
+                makeModulePriceDisabled(false);
+            }
+            makeObjStatus(noTestModules, true);  // 去掉不支持测试的模块的禁用属性
+            $('#hnapi-val-title').text("单价（元）");
+            $('input.hnapi-val').attr('step', '0.1');
+        }
+        makeDisabledUnselected();
+    });
+
+
+    /*//为了让进入交付申请页面web本身就被选择就要屏蔽api上传
+    var  imp_mode_for_disable= $('input[name=imp-mode]:checked').val();
+    var modes_for_disable = getCheckedArray('imp-mode');
+    if (modes_for_disable.length === 1 && modes_for_disable[0] === 'web'){
+
+        var apiFileUpload_dz = $('input[name=apiFileUpload_dz]');
+        var apiFileUpload_specialList = $('input[name=apiFileUpload_specialList]');
+        apiFileUpload_dz.attr('disabled', 'disabled');
+        apiFileUpload_dz.removeAttr('checked');
+        apiFileUpload_dz.parent().css('text-decoration', 'line-through');
+        apiFileUpload_specialList.attr('disabled', 'disabled');
+        apiFileUpload_specialList.removeAttr('checked');
+        apiFileUpload_specialList.parent().css('text-decoration', 'line-through');
+
+    }
+    $('input[name=imp-mode]').change(function(){
+        // 如果交付形式只有web一项, 那么就禁用web版可选模块以外的其他模块
+        var modes = getCheckedArray('imp-mode');
+        var apiFileUpload_dz = $('input[name=apiFileUpload_dz]');
+        var apiFileUpload_specialList = $('input[name=apiFileUpload_specialList]');
+        if (modes.length === 1 && modes[0] === 'web') {
+            $('input[name=pgbg-m]').each(function(){
+                var self = $(this);
+   
+                if (webModules.indexOf(self.attr('id')) === -1) {
+                    //self.removeAttr('checked');
+                    self.attr('disabled', 'disabled');
+                    self.parent().css('text-decoration', 'line-through');
+                }
+            });
+            //屏蔽 web版 hnaapi的产品
+            $('input[name=hnapi-m]').each(function(){
+                var self = $(this);
+                if (webModules_hna_api.indexOf(self.attr('id')) === -1) {
+                    self.removeAttr('checked');
+                    self.attr('disabled', 'disabled');
+                    self.parent().css('text-decoration', 'line-through');
+                    self.parent().parent().parent().nextAll().find('input').attr('disabled', 'disabled');
+                    self.parent().parent().parent().nextAll().find('textarea').attr('disabled', 'disabled');
+                    //self.parent().parent().parent().nextAll().attr('disabled', 'disabled');                    
+                }
+
+            });
+            //当只选api时候屏蔽贷中名单上传和特殊名单上传
+            
+            apiFileUpload_dz.attr('disabled', 'disabled');
+            apiFileUpload_dz.removeAttr('checked');
+            apiFileUpload_dz.parent().css('text-decoration', 'line-through');
+            apiFileUpload_specialList.attr('disabled', 'disabled');
+            apiFileUpload_specialList.removeAttr('checked');
+            apiFileUpload_specialList.parent().css('text-decoration', 'line-through');
+            //当只有网页版时候评分模块要只能单选
+            $('.score_module').each(function(){
+                self = $(this);
+                self.attr('type','radio');
+            });
+            //屏蔽评分报告的评分规则
+            $('div.flag .score_price input[type=number]').each(function(){
+                $(this).prop('disabled', 'disabled');
+                
+                });
+
+
+        } else {
+            $('input[name=pgbg-m]').each(function(){
+                var self = $(this);
+                if (noTestModules.indexOf(self.attr('id')) === -1) {
+                    self.removeAttr('disabled');
+                    self.parent().css('text-decoration', '');
+                }
+            });
+            //接触屏蔽贷中名单上传和特殊名单上传
+            apiFileUpload_dz.removeAttr('disabled');
+            apiFileUpload_dz.parent().css('text-decoration', '');
+            apiFileUpload_specialList.removeAttr('disabled');
+            apiFileUpload_specialList.parent().css('text-decoration', '');
+            //当api时候评分模块要多选
+            $('.score_module').each(function(){
+                self = $(this);
+                self.attr('type','checkbox');
+            });
+            $('input[name=hnapi-m]').each(function(){
+                    var self = $(this);
+                    self.removeAttr('disabled', '');
+                    self.parent().css('text-decoration', '');                    
+                    
+            });
+
+
+
+
+
+        }
+        makeDisabledUnselected();
+    });*/
+
+    $('input[name=charge-mode]').change(function(){
+        var mode = $(this).val();
+        if (mode === '1') {
+            modulePrice.show();
+            //$('input[name=score-price]').show();
+            $('input[name=pgbg-m]').parents('div.flag').find('input[type=number]').show();
+            makeModulePriceDisabled(false);
+            $('#hit-price').attr('disabled', 'disabled');
+            $('#fxgd-note').attr('disabled', 'disabled');
+            $('#year-price').attr('disabled', 'disabled');
+            $('#month-price').attr('disabled', 'disabled');
+        } else if (mode === '2') {
+            modulePrice.hide();
+            //$('input[name=score-price]').hide();
+            $('input[name=pgbg-m]').parents('div.flag').find('input[type=number]').hide();
+            makeModulePriceDisabled(true);
+            $('#hit-price').removeAttr('disabled');
+            $('#fxgd-note').attr('disabled', 'disabled');
+            $('#year-price').attr('disabled', 'disabled');
+            $('#month-price').attr('disabled', 'disabled');
+        } else if (mode === '3') {
+            modulePrice.show();
+            //$('input[name=score-price]').show();
+            $('input[name=pgbg-m]').parents('div.flag').find('input[type=number]').show();
+            makeModulePriceDisabled(false);
+            $('#hit-price').attr('disabled', 'disabled');
+            $('#fxgd-note').removeAttr('disabled');
+            $('#year-price').attr('disabled', 'disabled');
+            $('#month-price').attr('disabled', 'disabled');
+        } else if (mode === '4') {
+            modulePrice.hide();
+            //$('input[name=score-price]').hide();
+            $('input[name=pgbg-m]').parents('div.flag').find('input[type=number]').hide();
+            makeModulePriceDisabled(true);
+            $('#hit-price').attr('disabled', 'disabled');
+            $('#fxgd-note').attr('disabled', 'disabled');
+            $('#year-price').removeAttr('disabled');
+            $('#month-price').removeAttr('disabled');
+        } 
+    });
+/*
+    var imp_mode_singal = getCheckedArray('imp-mode');
+    if ( imp_mode_singal.length === 1 &&  imp_mode_singal[0] === 'web' ) {
+        $('.score_module').each(function(){
+                        self = $(this);
+                        self.attr('type','radio');
+                    });
+
+    }else {
+        $('.score_module').each(function(){
+                        self = $(this);
+                        self.attr('type','checkbox');
+                    });
+    };
+
+*/
+
+    $('#score .score_module').change(function(){
+        self = $(this);
+        var oCheckbox = $(this);
+        var oDiv = oCheckbox.parents('div.flag');
+
+        if (self.attr('type') === 'radio' && self.prop('checked')) {
+            if ( $('input[name=account-type]:checked').val() === '2' && $('input[name=charge-mode]:checked').val() !== '2' && self.prop('checked')) {
+                $('div.flag .score_price input[type=number]').each(function(){
+                    $(this).prop('disabled', 'disabled');
+                });
+                oDiv.find('input[type=number]').removeAttr('disabled');
+            } else if (self.attr('checked') == undefined ) {
+                //alert(self.attr('checked'));
+                //alert(oDiv.find('input[type=number]').val());
+                oDiv.find('input[type=number]').prop('disabled', 'disabled');
+            }
+
+        }
+        
+    });
+
+
+    $('input[name=pgbg-m]').change(function(){
+        var oCheckbox = $(this);
+        var oDiv = oCheckbox.parents('div.flag');
+        if (oCheckbox.is(':checked') && $('input[name=account-type]:checked').val() === '2' && $('input[name=charge-mode]:checked').val() !== '2') {
+            oDiv.find('input[type=number]').removeAttr('disabled');
+        } else {
+            oDiv.find('input[type=number]').attr('disabled', 'disabled');
+        }
+    });
+
+    $('input[name=hnapi-m]').change(function(){
+        var oCheckbox = $(this);
+        var oTr = oCheckbox.parents('tr');
+        if (oCheckbox.is(':checked')) {
+            oTr.find('input[type=number]').removeAttr('disabled');
+            oTr.find('textarea').removeAttr('disabled');
+        } else {
+            oTr.find('input[type=number]').attr('disabled', 'disabled');
+            oTr.find('textarea').attr('disabled', 'disabled');
+        }
+    });
+
+    
+
+
+
+
+
+    function checkForm() {
+        var oContact = $('#contact');
+        if (oContact.val() === '0'){
+            alert('请选择联系人');
+            oContact.focus();
+            return false;
+        }
+
+
+        var oAnalyser = $('#analyser');
+        if (oAnalyser.val() === '0'){
+            alert('请选择风控经理');
+            oAnalyser.focus();
+            return false;
+        }
+        var oOperations = $('#operations');
+        if (oOperations.val() === '0'){
+            alert('请选择运营经理');
+            oOperations.focus();
+            return false;
+        }
+        var oDeliverys = $('#deliverys');
+        if (oDeliverys.val() === '0'){
+            alert('请选择运营经理');
+            oDeliverys.focus();
+            return false;
+        }
+        var oImpTarget = $('#imp-target');
+        if (oImpTarget.val() === '0'){
+            alert('请选择此次交付的目的');
+            oImpTarget.focus();
+            return false;
+        }
+
+        var oMultiApply1 = $('#multi-apply1');
+        var oMultiApply2 = $('#multi-apply2');
+        if (!oMultiApply1.is(':checked') && !oMultiApply2.is(':checked')){
+            alert('请选择转正后是否计入多次申请');
+            oMultiApply1.focus();
+            return false;
+        }
+        var oMultiModule1 = $('#multi-module1');
+        var oMultiModule2 = $('#multi-module2');
+        if (!oMultiModule1.is(':checked') && !oMultiModule2.is(':checked')){
+            alert('请选择分模块调用');
+            oMultiModule1.focus();
+            return false;
+        }
+        var accountType = $('input[name=account-type]:checked').val();
+        var oFreePeriod = $('#free-period');
+        if (oFreePeriod.val() === '' && accountType === '2'){
+            alert('请选择免费期限');
+            oFreePeriod.focus();
+            return false;
+        }
+        if (accountType === '1') {
+            var apiCount = parseInt($('#api-count').val());
+            var webCount = parseInt($('#web-count').val());
+            if (apiCount > 50 || webCount > 1000) {
+                if ($('#email-pic-thumb').length == 0 && $('#email-pic').val() == '') {
+                    alert('请选择Frank邮件确认截图');
+                    return false;
+                }
+            }
+        } else if (accountType === "2") {
+            var chargeMode = $('input[name=charge-mode]:checked').val();
+            var charge_models_for_dw = $('#charge_models_for_dw');
+            if (chargeMode === undefined){
+                alert('还没有选择付费模式');
+                charge_models_for_dw.focus();
+                return false;
+            }
+        }
+        //write mike start
+        
+        var check_senven_element = impForm.find('input[name=pgbg-m]:checked');
+        var deviceAntiFraud=$("input[name=device-anti-fraud-platform-web]");
+        for (var i = check_senven_element.length - 1; i >= 0; i--) {
+            self=$(check_senven_element[i]);
+            if(device_serven_element.indexOf(self.attr('id')) > -1　&& !deviceAntiFraud.is(":checked")){
+                alert("请您填写设备七要素");
+                deviceAntiFraud.focus();
+                return false;
+            }
+        }
+        var web_domain = $("input[name=device-anti-fraud-platform-web-domin]");
+        var android_app = $("input[name=device-anti-fraud-platform-android]");
+        var ios_app = $("input[name=device-anti-fraud-platform-ios]");
+        var app_name = $("input[name=device-anti-fraud-platform-app-name]")
+        if(deviceAntiFraud.is(":checked") && !web_domain.val()){
+            alert("请您填写网页域名");
+            web_domain.focus();
+            return false;
+        }if(android_app.is(":checked") || ios_app.is(":checked") ){
+            if(!app_name.val()){
+                alert("请您填写app名称");
+                app_name.focus();
+                return false; 
+            }
+            
+        }
+        if (!$("input[value=imp_dq]").is(":checked") && !$("input[value=imp_dz]").is(":checked") ) {
+            alert("您还没选择对接内容");
+            $("input[value=imp_dq]").focus();
+            return false;
+        }
+        //write mike end
+        var pgbg = getCheckedArray('pgbg-m').length;
+        var hnapi = getCheckedArray('hnapi-m').length;
+        if ( pgbg === 0 && hnapi ===0) {
+            alert('还没有选择要交付的产品');
+            return false;
+        }
+        //修改pgbg的评分模块之后要检查选中 客制化评分 之后需要检查必填项
+        var score_check = impForm.find('#score label input:checked');
+        for (var i = score_check.length - 1; i >= 0; i--) {
+             var self = $(score_check[i]);
+             var score_name = self.parent().attr('value');
+             var oCusPf = $('textarea[name=cus-pf]');
+             if (score_name === '客制化评分' && !oCusPf.val()) {
+                alert('您选择了<客制化评分>模块,请填写相应个性化配置');
+                oCusPf.focus();
+                return false;
+             };
+             
+        };
+        var oInputs = impForm.find('input:required:enabled');
+        for (var i=0; i < oInputs.length; i++) {
+            var self = $(oInputs[i]);
+            if (self.val() === "" ){
+                alert('有必填项未填，请完成');
+                console.log(self.attr('name'));
+                self.focus();
+                return false;
+            }
+        }
+        var oTextareas = impForm.find('textarea:required:enabled');
+        for (var j=0; j < oTextareas.length; j++) {
+            var obj = $(oTextareas[j]);
+            if (obj.val() === ""){
+                alert('有必填项未填');
+                console.log(obj.attr('name'));
+                obj.focus();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    $('#save-btn').click(function(){
+        loading(true);
+        $('#action').val("save");
+        impForm.submit();
+        
+    });
+
+    $('#submit-btn').click(function(){
+        loading(true);
+        $('#action').val("submit");
+        if (checkForm()){
+            impForm.submit();
+           
+        } else {
+            loading(false);
+        }
+
+    });
+});
+//alert($("select[name=imp_mod_new]").val());
+// 检查hanapi选产品没有添加价格的功能
+/*function check_hnaapi_price(){
+    $(".hnapi_price_required").each(function(){
+        //alert($(this).prop('disabled'));
+   
+        if (!$(this).prop('disabled')){
+            alert($(this).val());
+            if (!$(this).val()) {
+                return false;
+            }
+        }
+        });
+
+}
+
+*/
+
+
+
+</script>
+

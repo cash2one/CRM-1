@@ -1,0 +1,79 @@
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="analyser" class="control-label">分析师：</label>
+        <select id="analyser" name="analyser" class="form-control">
+        {% for usercredit in analysers %}
+            <option value="{{ usercredit.id }}" {% ifequal usercredit analyser_selected %}selected{% endifequal %}>{{ usercredit.user.first_name }}</option>
+        {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="imp-engineer" class="control-label">交付工程师：</label>
+        <select id="imp-engineer" name="imp-engineer" class="form-control">
+        {% for usercredit in imp_engineers %}
+            <option value="{{ usercredit.id }}" {% ifequal usercredit imp_engineer_selected %}selected{% endifequal %}>{{ usercredit.user.first_name }}</option>
+        {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="control-label">是否已签署保密协议：</label>
+        <label class="radio-inline"><input type="radio" name="nda" id="nda" value="0" {% ifequal nda 0 %}checked{% endifequal %}>否</label>
+        <label class="radio-inline"><input type="radio" name="nda" id="nda" value="1" {% ifequal nda 1 %}checked{% endifequal %}>是</label>
+    </div>
+    <div class="form-group">
+        <label class="control-label">是否已签署正式合同：</label>
+        <label class="radio-inline"><input type="radio" name="contract" id="contract" value="0" {% ifequal contract 0 %}checked{% endifequal %}>否</label>
+        <label class="radio-inline"><input type="radio" name="contract" id="contract" value="1" {% ifequal contract 1 %}checked{% endifequal %}>是</label>
+    </div>
+    <div class="form-group">
+        <label class="control-label">是否部署百融代码：</label>
+        <label class="radio-inline"><input type="radio" name="br-code" id="br-code" value="0" {% ifequal br_code 0 %}checked{% endifequal %}>否</label>
+        <label class="radio-inline"><input type="radio" name="br-code" id="br-code" value="1" {% ifequal br_code 1 %}checked{% endifequal %}>是</label>
+    </div>
+    <div class="form-group">
+        <label class="control-label">账号类型：</label>
+        <label class="radio-inline"><input type="radio" name="account-type" id="account-type" value="1" {% ifequal account_type 1 %}checked{% endifequal %}>试用</label>
+        <label class="radio-inline"><input type="radio" name="account-type" id="account-type" value="2" {% ifequal account_type 2 %}checked{% endifequal %}>正式</label>
+    </div>
+    <div class="form-group">
+        <label for="id-version" class="control-label">购买版本</label>
+        <select class="form-control" id="id-version" name="version">
+            <option value="1" {% ifequal version 1 %}selected{% endifequal %}>基本版</option>
+            <option value="2" {% ifequal version 2 %}selected{% endifequal %}>高级版</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="id-code-url" class="control-label">部署代码的网址</label>
+        <input id="id-code-url" name="code-url" type="text" class="form-control" value="{{ code_url }}" placeholder="必填" required>
+    </div>
+    <div class="form-group">
+        <label for="id-test-account" class="control-label">测试账号</label>
+        <input id="id-test-account" name="test-account" type="text" class="form-control" value="{{ test_account }}" placeholder="必填" required>
+    </div>
+    <div class="form-group">
+        <label for="id-test-account-pwd" class="control-label">密码</label>
+        <input id="id-test-account-pwd" name="test-account-pwd" type="text" class="form-control" value="{{ test_account_pwd }}" placeholder="必填" required>
+    </div>
+    <div class="form-group">
+        <label for="contact" class="control-label">联系人</label>
+        <div class="input-group">
+            <select id="contact" name="contact" class="form-control">
+                {% for contact in contacts %}
+                    <option value="{{ contact.id }}" {% ifequal contact contact_selected %}selected{% endifequal %}>{{ contact.name }}</option>
+                {% endfor %}
+            </select>
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-info" onclick="show_contact_add_modal()">新建</button>
+            </span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="notes" class="control-label">备注：</label>
+        <textarea id="notes" name="notes" class="form-control" rows="3">{{ notes }}</textarea>
+    </div>
+    <div align="center">
+        <button type="submit" class="btn btn-success">提交</button>
+        <button type="button" class="btn btn-danger" onclick="backtopage()">返回</button>
+    </div>
+</form>

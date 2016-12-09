@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block title %}项目列表{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <ul class="filter">
+            <li>
+                <p><strong>客户级别：</strong></p>
+                <a href="{% url 'projects' priority=0 progress=progress productid=productid updatetime=updatetime %}" {% ifequal priority 0 %}class="selected"{% endifequal %}>不限<span></span></a>
+                {% for val, text in project_priority %}
+                    <a href="{% url 'projects' priority=val progress=progress productid=productid updatetime=updatetime %}" {% ifequal priority val %}class="selected"{% endifequal %}>{{ text }}<span></span></a>
+                {% endfor %}
+            </li>
+            <li>
+                <p><strong>最新进度：</strong></p>
+                <a href="{% url 'projects' priority=priority progress=0 productid=productid updatetime=updatetime %}" {% ifequal progress 0 %}class="selected"{% endifequal %}>不限<span></span></a>
+                {% for val, text in progress_choices %}
+                    <a href="{% url 'projects' priority=priority progress=val productid=productid updatetime=updatetime %}" {% ifequal progress val %}class="selected"{% endifequal %}>{{ text }}<span></span></a>
+                {% endfor %}
+            </li>
+            <li>
+                <p><strong>产品：</strong></p>
+                <a href="{% url 'projects' priority=priority progress=progress productid=0 updatetime=updatetime %}" {% ifequal productid 0 %}class="selected"{% endifequal %}>不限<span></span></a>
+                {% for product in products %}
+                    <a href="{% url 'projects' priority=priority progress=progress productid=product.id updatetime=updatetime %}" {% ifequal productid product.id %}class="selected"{% endifequal %}>{{ product.name }}<span></span></a>
+                {% endfor %}
+            </li>
+            <li>
+                <p><strong>更新时间：</strong></p>
+                {% for val, text in time_choices %}
+                    <a href="{% url 'projects' priority=priority progress=progress productid=productid updatetime=val %}" {% ifequal val updatetime %}class="selected"{% endifequal %}>{{ text }}<span></span></a>
+                {% endfor %}
+            </li>
+        </ul>
+        <!-- 自定义查询 -->
+        <form class="form-inline" action="" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="project-name" class="control-label">项目名称：</label>
+                <input name="project-name" type="text" class="form-control" value="{{ project_name }}" placeholder="项目名称">
+            </div>
+            <div class="form-group">
+                <label for="customer-name" class="control-label">客户名称：</label>
+                <input name="customer-name" type="text" class="form-control" value="{{ customer_name }}" placeholder="客户名称">
+            </div>
+            <div class="form-group">
+                <label for="date-start" class="control-label">更新时间：</label>
+                <div class="input-group date form_date" data-date-format="yyyy-mm-dd">
+                    <input name="date-start" class="form-control" size="12" type="text" value="{{ date_start }}" placeholder="起始时间" readonly>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="date-end" class="control-label">至</label>
+                <div class="input-group date form_date" data-date-format="yyyy-mm-dd">
+                    <input name="date-end" class="form-control" size="12" type="text" value="{{ date_end }}" placeholder="结束时间" readonly>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success form-group">查询</button>
+        </form>
+    </div>
+
+    <!-- 信息列表 -->
+    <div class="container-fluid">
+        <div align="left">
+            <br>
+            <a href="{% url 'project-add' %}" class="btn btn-success" role="button">新增项目</a>
+            <a href="{% url 'export-projects' %}?{{ export_url_param }}" target="_blank" role="button" class="btn btn-success">&nbsp;&nbsp;导出&nbsp;&nbsp;</a>
+        </div>
+        <br>
+        <div>
+            <table class="table table-bordered table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>项目名称</th>
+                        <th>所属客户</th>
+                        <th>产品</th>
+                        <th>客户级别</th>
+                        <th>状态</th>
+                        <th>跟进商务</th>
+                        <th>最新进度</th>
+                        <th>最新进展</th>
+                        <th>下一步计划</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for project in page.object_list %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ project.name }}</td>
+                        <td>{{ project.customer.name }}</td>
+                        <td>{{ project.get_products_name }}</td>
+                        <td>{{ project.priority_display }}</td>
+                        <td>{{ project.get_state }}</td>
+                        <td>{{ project.get_businessmans_name }}</td>
+                        <td>{{ project.get_cur_progress.progress }}</td>
+                        <td style="width: 25%">{{ project.get_cur_progress.desc }}</td>
+                        <td style="width: 20%">{{ project.get_cur_progress.plan }}</td>
+                        <td>
+                            <button type="button" class="btn btn-link btn-tb" value="{{ project.id }},{{ project.name }},{{ project.get_cur_progress_val }}" onclick="show_update_progress(this)">更新进度</button>
+                            <a href="{% url 'project-edit' project.id %}" class="btn btn-link btn-tb" role="button">编辑</a>
+                            <a href="{% url 'project-view' project.id %}" class="btn btn-link btn-tb" role="button">查看</a>
+                            <a href="{% url 'test-apply-add-view' project.id %}" class="btn btn-link btn-tb" role="button">申请测试</a>
+                            <button type="button" class="btn btn-link btn-tb" onclick="showSelectProductModel({{ project.id }})">申请交付</button>
+                            {% if project.del_enabled %}
+                            <button type="button" class="btn btn-link btn-tb" onclick="show_project_del({{ project.id }},'{{ project.name }}')">删除</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div align="center">
+        {% bootstrap_pagination page url=request.path extra=extra_param size="small" %}
+    </div>
+{% endblock %}
+{% block modal %}
+    <!-- select-product-Modal -->
+    <div class="modal fade" id="select-product-modal" tabindex="-1" role="dialog" aria-labelledby="select-product-model" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">请选择要交付的<strong>产品</strong></h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="product" class="control-label">产品：</label>
+                            <select id="product" name="product" class="form-control"></select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" value="" onclick="locateImpApply(this)">确定</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div><!-- end select-product-Modal -->
+    <!-- update-Modal -->
+    <div class="modal fade" id="update-progress-modal" tabindex="-1" role="dialog" aria-labelledby="update-progress-model" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><strong></strong></h4>
+                </div>
+                <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="progress" class="control-label">最新进度：</label>
+                        <select id="progress" name="progress" class="form-control">
+                            {% for val, text in progress_choices %}
+                            <option value="{{ val }}">{{ text }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dtp_input1" class="control-label">更新时间：</label>
+                        <div class="input-group date form_date" data-date-format="yyyy-mm-dd" data-link-field="dtp_input1">
+                            <input name="datetime" class="form-control" size="12" type="text" value="" placeholder="缺省当前时间" readonly>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="description" class="control-label">最新进展：</label>
+                        <textarea id="description" name="description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="plan" class="control-label">下一步计划：</label>
+                        <textarea id="plan" name="plan" class="form-control" rows="3"></textarea>
+                    </div>
+                </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" value="" onclick="update_progress(this)">保存</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div><!-- end update-Modal -->
+    <!-- del-confirm-Modal -->
+    <div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog" aria-labelledby="confirm-modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><strong></strong></h4>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" value="" onclick="project_del(this)">确认</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div><!-- end-del-confirm-Modal -->
+{% endblock %}
